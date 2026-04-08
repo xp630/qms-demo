@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"git push origin qms-demo 2>&1\",\"timeout\":60000,\"description\":\"Push to GitHub\"}",
-  "error": "Exit code 128\nremote: Repository not found.\nfatal: repository 'https://github.com/xp630/qms-demo.git/' not found\n\nremote: Repository not found.\nfatal: repository 'https://github.com/xp630/qms-demo.git/' not found",
-  "timestamp": "2026-04-08T09:56:58.363Z",
-  "retry_count": 4
+  "tool_input_preview": "{\"command\":\"~/.claude/skills/gstack/browse/dist/browse goto http://localhost:3002 2>&1\",\"timeout\":30000,\"description\":\"Navigate to QMS demo\"}",
+  "error": "Exit code 1\n[browse] Another instance is starting the server, waiting...\n[browse] Timed out waiting for another instance to start the server\n\n[browse] Another instance is starting the server, waiting...\n[browse] Timed out waiting for another instance to start the server",
+  "timestamp": "2026-04-08T10:00:32.970Z",
+  "retry_count": 2
 }

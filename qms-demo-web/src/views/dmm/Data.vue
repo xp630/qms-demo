@@ -2,7 +2,7 @@
   <div class="page-container">
     <h2 class="page-title">测量数据</h2>
     <el-card shadow="hover">
-      <el-table :data="[{},{},{}]" stripe border>
+      <el-table :data="tableData" stripe border>
         <el-table-column prop="measureNo" label="测量编号" />
         <el-table-column prop="partNo" label="零件号" />
         <el-table-column prop="pointCount" label="测量点数" align="center" />
@@ -14,6 +14,9 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import { measureDataList } from '@/mock'
+const tableData = ref([...measureDataList])
 </script>
 
 <style scoped lang="scss">

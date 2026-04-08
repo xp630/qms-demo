@@ -2,7 +2,7 @@
   <div class="page-container">
     <h2 class="page-title">测量计划</h2>
     <el-card shadow="hover">
-      <el-table :data="[{},{},{}]" stripe border>
+      <el-table :data="tableData" stripe border>
         <el-table-column prop="planNo" label="计划编号" />
         <el-table-column prop="planDate" label="计划日期" />
         <el-table-column prop="model" label="机台型" />
@@ -15,6 +15,9 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import { measurePlanList } from '@/mock'
+const tableData = ref([...measurePlanList])
 </script>
 
 <style scoped lang="scss">

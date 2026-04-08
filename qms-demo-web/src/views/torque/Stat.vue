@@ -16,7 +16,7 @@ onMounted(() => {
   chart = echarts.init(chartRef.value)
   chart.setOption({ tooltip: {trigger:'axis'}, xAxis: {type:'category',data:['1月','2月','3月','4月']}, yAxis: {type:'value',axisLabel:{formatter:'{value}%'}}, series: [{type:'line',data:[98.5,98.2,98.8,99.1],itemStyle:{color:'#409EFF'}}] })
   distChart = echarts.init(distChartRef.value)
-  distChart.setOption({ tooltip: {trigger:'item'}}, series: [{type:'pie',radius:'60%',data:[{value:985,name:'合格'},{value:15,name:'不合格'}]}])
+  distChart.setOption({ tooltip: {trigger:'item'}, series: [{type:'pie',radius:'60%',data:[{value:985,name:'合格'},{value:15,name:'不合格'}]}]})
   window.addEventListener('resize',()=>{chart?.resize();distChart?.resize()})
 })
 onUnmounted(()=>{chart?.dispose();distChart?.dispose()})

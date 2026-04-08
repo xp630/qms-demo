@@ -3,3 +3,5 @@
 {"t":0,"agent":"system","event":"skill_invoked","skill_name":"superpowers:brainstorming"}
 {"t":0,"agent":"a3e5458","agent_type":"unknown","event":"agent_stop","success":true}
 {"t":0,"agent":"ae43c25","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"af0767b","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"design-review"}

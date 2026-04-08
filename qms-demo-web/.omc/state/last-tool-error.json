@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"node -e \\\"const icons = require('@element-plus/icons-vue'); ['Scale'].forEach(k => console.log(k, !!icons[k]))\\\"\",\"description\":\"Check Scale icon\"}",
-  "error": "Exit code 1\n[eval]:1\nconst icons = require('@element-plus/icons-vue'); ['Scale'].forEach(k => console.log(k, \\!\\!icons[k]))\n                                                                                        ^\nExpected unicode escape\n\nSyntaxError: Invalid or unexpected token\n    at makeContextifyScript (node:internal/vm:185:14)\n    at compileScript (node:internal/process/execution:383:10)\n    at evalTypeScript (node:internal/process/execution:256:22)\n    at node:internal/main/eval_string:74:...",
-  "timestamp": "2026-04-08T09:51:41.987Z",
-  "retry_count": 2
+  "tool_input_preview": "{\"command\":\"~/.claude/skills/gstack/browse/dist/browse status 2>&1\",\"description\":\"Check browse server status\"}",
+  "error": "Exit code 1\n[browse] Another instance is starting the server, waiting...\n[browse] Timed out waiting for another instance to start the server\n\n[browse] Another instance is starting the server, waiting...\n[browse] Timed out waiting for another instance to start the server",
+  "timestamp": "2026-04-08T10:03:00.202Z",
+  "retry_count": 3
 }

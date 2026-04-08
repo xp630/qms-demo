@@ -2,7 +2,7 @@
   <div class="page-container">
     <h2 class="page-title">偏差审批</h2>
     <el-card shadow="hover">
-      <el-table :data="[{}]" stripe border>
+      <el-table :data="tableData" stripe border>
         <el-table-column prop="damNo" label="偏差编号" />
         <el-table-column prop="description" label="偏差描述" show-overflow-tooltip />
         <el-table-column prop="applicant" label="申请人" />
@@ -23,6 +23,9 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import { damApproveList } from '@/mock'
+const tableData = ref([...damApproveList])
 </script>
 
 <style scoped lang="scss">

@@ -2,7 +2,7 @@
   <div class="page-container">
     <h2 class="page-title">尺寸问题</h2>
     <el-card shadow="hover">
-      <el-table :data="[{},{},{}]" stripe border>
+      <el-table :data="tableData" stripe border>
         <el-table-column prop="issueNo" label="问题编号" />
         <el-table-column prop="partNo" label="零件号" />
         <el-table-column prop="dimension" label="测量维度" />
@@ -15,6 +15,9 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import { measureIssueList } from '@/mock'
+const tableData = ref([...measureIssueList])
 </script>
 
 <style scoped lang="scss">
