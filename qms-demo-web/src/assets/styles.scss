@@ -1,0 +1,66 @@
+// QMS 科技蓝主题变量
+$primary-color: #409EFF;
+$success-color: #67C23A;
+$warning-color: #E6A23C;
+$danger-color: #F56C6C;
+$info-color: #909399;
+
+$bg-color: #f0f2f5;
+$header-height: 60px;
+$sidebar-width: 220px;
+
+// 全局样式
+body {
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+}
+
+// 科技蓝主题覆盖
+.el-menu--horizontal > .el-menu-item.is-active {
+  border-bottom: 3px solid $primary-color;
+}
+
+.el-card {
+  border-radius: 8px;
+}
+
+.el-button--primary {
+  background-color: $primary-color;
+  border-color: $primary-color;
+}
+
+// 页面容器
+.page-container {
+  padding: 20px;
+}
+
+// 统计卡片
+.stat-card {
+  .stat-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #303133;
+  }
+  .stat-label {
+    font-size: 14px;
+    color: #909399;
+    margin-top: 8px;
+  }
+}
+
+// 表格
+.el-table {
+  .cell {
+    padding: 8px 12px;
+  }
+}
+
+// 搜索表单
+.search-form {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  .el-form-item {
+    margin-bottom: 0;
+  }
+}
