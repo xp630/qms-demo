@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  qms-frontend:
+    image: nginx:alpine
+    container_name: qms-demo-web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./dist:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    restart: unless-stopped
+    networks:
+      - qms-network
+
+networks:
+  qms-network:
+    driver: bridge
