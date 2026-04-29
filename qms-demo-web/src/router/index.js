@@ -40,7 +40,7 @@ const routes = [
         component: () => import('@/views/pqm/Report.vue'),
         meta: { title: 'FPY/DPU报表', icon: 'DataLine', module: 'PQM' }
       },
-      // QIM 质量改进
+      // QIM 质量改进 - 按工作流程排序
       {
         path: 'qim/problem-list',
         name: 'ProblemList',
@@ -52,12 +52,6 @@ const routes = [
         name: 'ProblemCreate',
         component: () => import('@/views/qim/ProblemCreate.vue'),
         meta: { title: '创建问题', icon: 'Plus', module: 'QIM' }
-      },
-      {
-        path: 'qim/problem-detail/:id',
-        name: 'ProblemDetail',
-        component: () => import('@/views/qim/ProblemDetail.vue'),
-        meta: { title: '问题详情', icon: 'Document', module: 'QIM' }
       },
       {
         path: 'qim/problem-definition',
@@ -83,6 +77,12 @@ const routes = [
         component: () => import('@/views/qim/ProblemLibrary.vue'),
         meta: { title: '问题库', icon: 'Collection', module: 'QIM' }
       },
+      {
+        path: 'qim/problem-detail/:id',
+        name: 'ProblemDetail',
+        component: () => import('@/views/qim/ProblemDetail.vue'),
+        meta: { title: '问题详情', icon: 'Document', module: 'QIM' }
+      },
       // QSM 质量文件
       {
         path: 'qsm/document',
@@ -102,7 +102,7 @@ const routes = [
         component: () => import('@/views/qsm/Objective.vue'),
         meta: { title: '质量目标', icon: 'Aim', module: 'QSM' }
       },
-      // DAM 偏差管理
+      // DAM 偏差管理 - 按工作流程排序
       {
         path: 'dam/apply',
         name: 'DamApply',
@@ -122,16 +122,16 @@ const routes = [
         meta: { title: '偏差实施', icon: 'Timer', module: 'DAM' }
       },
       {
-        path: 'dam/close',
-        name: 'DamClose',
-        component: () => import('@/views/dam/DeviationClose.vue'),
-        meta: { title: '偏差关闭', icon: 'CircleCheck', module: 'DAM' }
-      },
-      {
         path: 'dam/report',
         name: 'DamReport',
         component: () => import('@/views/dam/DeviationReport.vue'),
         meta: { title: '偏差报告', icon: 'DataLine', module: 'DAM' }
+      },
+      {
+        path: 'dam/close',
+        name: 'DamClose',
+        component: () => import('@/views/dam/DeviationClose.vue'),
+        meta: { title: '偏差关闭', icon: 'CircleCheck', module: 'DAM' }
       },
       {
         path: 'dam/record',
