@@ -38,6 +38,11 @@
   --glow-green: 0 0 20px rgba(16, 185, 129, 0.6), 0 0 40px rgba(16, 185, 129, 0.3);
   --glow-red: 0 0 20px rgba(239, 68, 68, 0.6), 0 0 40px rgba(239, 68, 68, 0.3);
 
+  /* 阴影效果 */
+  --shadow-header: 0 2px 20px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-submenu: rgba(0, 0, 0, 0.2);
+
   /* 动画 */
   --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-glow: 0.4s ease;

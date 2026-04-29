@@ -1,6 +1,6 @@
 <template>
   <div class="cyber-grid-bg"></div>
-  <el-container class="layout-container">
+  <el-container class="layout-container" :class="{ 'theme-light': !themeStore.isDark }">
     <!-- 侧边栏 -->
     <el-aside :width="sidebarWidth" class="sidebar">
       <div class="logo">
@@ -172,11 +172,12 @@
         <div class="header-right">
           <!-- 主题切换 -->
           <el-tooltip :content="themeStore.isDark ? '切换到浅色主题' : '切换到深色主题'" placement="bottom">
-            <el-button text @click="themeStore.toggleTheme" class="theme-toggle-btn">
-              <el-icon size="20">
+            <el-button @click="themeStore.toggleTheme" class="theme-toggle-btn" :class="{ 'is-dark': themeStore.isDark }">
+              <el-icon size="18">
                 <Sunny v-if="themeStore.isDark" />
                 <Moon v-else />
               </el-icon>
+              <span class="theme-label">{{ themeStore.isDark ? '浅色' : '深色' }}</span>
             </el-button>
           </el-tooltip>
           <el-dropdown>
@@ -237,9 +238,9 @@ const toggleSidebar = () => {
 }
 
 .sidebar {
-  background: rgba(15, 28, 50, 0.95) !important;
-  border-right: 1px solid rgba(0, 200, 255, 0.2) !important;
-  transition: width 0.3s;
+  background: var(--bg-sidebar) !important;
+  border-right: 1px solid var(--border-default) !important;
+  transition: width 0.3s, background 0.3s;
   overflow-x: hidden;
 
   .logo {
@@ -248,8 +249,9 @@ const toggleSidebar = () => {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    border-bottom: 1px solid rgba(0, 200, 255, 0.15);
+    border-bottom: 1px solid var(--border-default);
     position: relative;
+    background: var(--bg-sidebar);
 
     &::after {
       content: '';
@@ -258,22 +260,22 @@ const toggleSidebar = () => {
       left: 10%;
       right: 10%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, #00d4ff, transparent);
-      box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+      box-shadow: 0 0 8px var(--neon-cyan);
     }
 
     .logo-icon {
-      color: #00d4ff;
-      filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));
+      color: var(--neon-cyan);
+      filter: drop-shadow(0 0 8px var(--neon-cyan));
       animation: glow-pulse 2s ease-in-out infinite;
     }
 
     .logo-text {
-      color: #00d4ff;
+      color: var(--neon-cyan);
       font-size: 16px;
       font-weight: 700;
       letter-spacing: 2px;
-      text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+      text-shadow: 0 0 10px var(--neon-cyan);
     }
   }
 
@@ -282,38 +284,38 @@ const toggleSidebar = () => {
     background: transparent !important;
 
     :deep(.el-sub-menu__title) {
-      color: #8b9dc3 !important;
+      color: var(--text-secondary) !important;
       font-size: 14px;
       transition: var(--transition-glow);
 
       &:hover {
         background: rgba(0, 200, 255, 0.08) !important;
-        color: #00d4ff !important;
+        color: var(--neon-cyan) !important;
       }
     }
 
     :deep(.el-menu-item) {
-      color: #8b9dc3 !important;
+      color: var(--text-secondary) !important;
       font-size: 14px;
       transition: var(--transition-glow);
       border-left: 3px solid transparent;
 
       &:hover {
         background: rgba(0, 200, 255, 0.08) !important;
-        color: #00d4ff !important;
-        border-left-color: #00d4ff;
+        color: var(--neon-cyan) !important;
+        border-left-color: var(--neon-cyan);
       }
 
       &.is-active {
-        color: #00d4ff !important;
+        color: var(--neon-cyan) !important;
         background: rgba(0, 200, 255, 0.12) !important;
-        border-left: 3px solid #00d4ff;
-        text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+        border-left: 3px solid var(--neon-cyan);
+        text-shadow: 0 0 10px var(--neon-cyan);
       }
     }
 
     :deep(.el-sub-menu .el-menu) {
-      background: rgba(0, 0, 0, 0.2) !important;
+      background: var(--bg-secondary) !important;
     }
 
     :deep(.el-sub-menu__title .el-icon) {
@@ -323,13 +325,13 @@ const toggleSidebar = () => {
 }
 
 .header {
-  background: rgba(13, 21, 37, 0.98) !important;
+  background: var(--bg-header) !important;
   border-bottom: 1px solid var(--border-default);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-header);
 
   .header-btn {
     color: var(--text-secondary) !important;
@@ -365,14 +367,30 @@ const toggleSidebar = () => {
     gap: 12px;
 
     .theme-toggle-btn {
-      color: var(--text-secondary) !important;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-card);
+      color: var(--text-primary);
       transition: var(--transition-glow);
-      padding: 8px;
-      border-radius: 8px;
+      font-size: 13px;
 
       &:hover {
-        color: var(--neon-cyan) !important;
-        background: rgba(0, 229, 255, 0.1) !important;
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
+        box-shadow: 0 0 10px rgba(0, 200, 255, 0.2);
+      }
+
+      &.is-dark {
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
+      }
+
+      .theme-label {
+        font-weight: 500;
       }
     }
 
