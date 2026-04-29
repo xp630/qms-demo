@@ -1,0 +1,550 @@
+/* ============================================================
+   QMS 浅色主题 — Light Theme
+   ============================================================ */
+
+/* ---- CSS Variables ---- */
+.theme-light {
+  /* 背景色系 */
+  --bg-primary: #f5f7fa;
+  --bg-secondary: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-card-hover: rgba(255, 255, 255, 1);
+  --bg-sidebar: #ffffff;
+  --bg-header: rgba(255, 255, 255, 0.98);
+
+  /* 边框 */
+  --border-default: rgba(64, 158, 255, 0.15);
+  --border-glow: rgba(64, 158, 255, 0.4);
+  --border-accent: rgba(192, 132, 252, 0.3);
+
+  /* 主色 */
+  --neon-cyan: #409eff;
+  --neon-blue: #3b82f6;
+  --neon-purple: #8b5cf6;
+  --neon-green: #10b981;
+  --neon-red: #ef4444;
+  --neon-orange: #f59e0b;
+  --neon-yellow: #fbbf24;
+
+  /* 文字 */
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --text-accent: #409eff;
+
+  /* 阴影效果 */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+  /* 动画 */
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-glow: 0.3s ease;
+}
+
+/* ---- Base Reset for Light Theme ---- */
+.theme-light html,
+.theme-light body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* 浅色网格背景 */
+.theme-light .cyber-grid-bg {
+  background-image:
+    linear-gradient(rgba(64, 158, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(64, 158, 255, 0.03) 1px, transparent 1px);
+  opacity: 0.6;
+}
+
+/* ---- 卡片样式 ---- */
+.theme-light .glow-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-md);
+}
+
+.theme-light .glow-card:hover {
+  border-color: var(--border-glow);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.theme-light .glow-card::before {
+  background: linear-gradient(135deg, rgba(64, 158, 255, 0.3), rgba(139, 92, 246, 0.2), transparent);
+}
+
+/* ---- 按钮样式 ---- */
+.theme-light .btn-cyber {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+.theme-light .btn-cyber:hover {
+  background: rgba(64, 158, 255, 0.1);
+  box-shadow: 0 0 15px rgba(64, 158, 255, 0.3);
+}
+
+.theme-light .btn-cyber-primary {
+  background: rgba(64, 158, 255, 0.1);
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+/* ---- Element Plus 组件浅色化 ---- */
+
+/* 表格 */
+.theme-light .el-table {
+  --el-table-bg-color: transparent !important;
+  --el-table-tr-bg-color: transparent !important;
+  --el-table-header-bg-color: rgba(64, 158, 255, 0.06) !important;
+  --el-table-row-hover-bg-color: rgba(64, 158, 255, 0.04) !important;
+  --el-table-border-color: rgba(64, 158, 255, 0.12) !important;
+  --el-table-text-color: #334155 !important;
+  --el-table-header-text-color: #475569 !important;
+  background: transparent !important;
+}
+
+.theme-light .el-table th.el-table__cell {
+  background: rgba(64, 158, 255, 0.06) !important;
+  color: #409eff !important;
+  border-bottom: 1px solid rgba(64, 158, 255, 0.12) !important;
+  font-weight: 600;
+}
+
+.theme-light .el-table td.el-table__cell {
+  border-bottom: 1px solid rgba(64, 158, 255, 0.08) !important;
+  color: #334155;
+}
+
+.theme-light .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+  background: rgba(64, 158, 255, 0.02) !important;
+}
+
+/* 表单 */
+.theme-light .el-input__wrapper,
+.theme-light .el-textarea__inner,
+.theme-light .el-select__wrapper {
+  background: #ffffff !important;
+  border: 1px solid rgba(64, 158, 255, 0.2) !important;
+  box-shadow: none !important;
+  color: #334155 !important;
+  border-radius: 6px !important;
+}
+
+.theme-light .el-input__wrapper:hover,
+.theme-light .el-input__wrapper.is-focus,
+.theme-light .el-textarea__inner:focus,
+.theme-light .el-select__wrapper:hover,
+.theme-light .el-select__wrapper.is-focused {
+  border-color: #409eff !important;
+  box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.1) !important;
+}
+
+.theme-light .el-input__inner,
+.theme-light .el-textarea__inner,
+.theme-light .el-select__input-text {
+  color: #334155 !important;
+}
+
+.theme-light .el-input__inner::placeholder,
+.theme-light .el-textarea__inner::placeholder {
+  color: #94a3b8 !important;
+}
+
+.theme-light .el-form-item__label {
+  color: #475569 !important;
+  font-weight: 500;
+}
+
+/* 按钮 */
+.theme-light .el-button--primary {
+  background: linear-gradient(135deg, #409eff, #3b82f6) !important;
+  border-color: #409eff !important;
+  color: #ffffff !important;
+}
+
+.theme-light .el-button--primary:hover,
+.theme-light .el-button--primary:focus {
+  background: linear-gradient(135deg, #66b1ff, #5aaaff) !important;
+  border-color: #66b1ff !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(64, 158, 255, 0.4) !important;
+}
+
+.theme-light .el-button--success {
+  background: linear-gradient(135deg, #67c23a, #5daf34) !important;
+  border-color: #67c23a !important;
+  color: #ffffff !important;
+}
+
+.theme-light .el-button--success:hover {
+  background: linear-gradient(135deg, #85ce61, #7dc654) !important;
+  box-shadow: 0 4px 12px rgba(103, 194, 58, 0.4) !important;
+}
+
+.theme-light .el-button--warning {
+  background: linear-gradient(135deg, #e6a23c, #d89e3a) !important;
+  border-color: #e6a23c !important;
+  color: #ffffff !important;
+}
+
+.theme-light .el-button--danger {
+  background: linear-gradient(135deg, #f56c6c, #e54545) !important;
+  border-color: #f56c6c !important;
+  color: #ffffff !important;
+}
+
+.theme-light .el-button--default {
+  background: #ffffff !important;
+  border-color: #dcdfe6 !important;
+  color: #606266 !important;
+}
+
+.theme-light .el-button--default:hover {
+  border-color: #409eff !important;
+  color: #409eff !important;
+}
+
+/* 对话框 */
+.theme-light .el-dialog {
+  background: #ffffff !important;
+  border: 1px solid rgba(64, 158, 255, 0.15) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.theme-light .el-dialog__header {
+  border-bottom: 1px solid rgba(64, 158, 255, 0.1) !important;
+  background: linear-gradient(135deg, rgba(64, 158, 255, 0.03), rgba(64, 158, 255, 0.01)) !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.theme-light .el-dialog__title {
+  color: #409eff !important;
+  font-weight: 600;
+}
+
+.theme-light .el-dialog__body {
+  color: #334155 !important;
+}
+
+.theme-light .el-dialog__footer {
+  border-top: 1px solid rgba(64, 158, 255, 0.1) !important;
+}
+
+.theme-light .el-overlay {
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 卡片 */
+.theme-light .el-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(64, 158, 255, 0.12) !important;
+  border-radius: 12px !important;
+  color: #334155 !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.theme-light .el-card:hover {
+  border-color: rgba(64, 158, 255, 0.3) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.theme-light .el-card__header {
+  border-bottom: 1px solid rgba(64, 158, 255, 0.1) !important;
+  color: #1e293b !important;
+  background: linear-gradient(135deg, rgba(64, 158, 255, 0.03), transparent) !important;
+}
+
+/* 分页 */
+.theme-light .el-pagination {
+  --el-pagination-bg-color: transparent !important;
+  --el-pagination-text-color: #64748b !important;
+  --el-pagination-button-color: #64748b !important;
+  --el-pagination-hover-color: #409eff !important;
+}
+
+.theme-light .el-pager li {
+  background: #f5f7fa !important;
+  border: 1px solid #e4e7ed !important;
+  color: #606266 !important;
+  border-radius: 4px !important;
+}
+
+.theme-light .el-pager li:hover {
+  color: #409eff !important;
+  border-color: #409eff !important;
+}
+
+.theme-light .el-pager li.is-active {
+  background: #409eff !important;
+  border-color: #409eff !important;
+  color: #ffffff !important;
+}
+
+/* 下拉菜单 */
+.theme-light .el-dropdown-menu {
+  background: #ffffff !important;
+  border: 1px solid rgba(64, 158, 255, 0.15) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+.theme-light .el-dropdown-menu__item {
+  color: #334155 !important;
+}
+
+.theme-light .el-dropdown-menu__item:hover {
+  background: rgba(64, 158, 255, 0.08) !important;
+  color: #409eff !important;
+}
+
+/* 标签 */
+.theme-light .el-tag {
+  border-radius: 4px !important;
+}
+
+/* 描述列表 */
+.theme-light .el-descriptions {
+  --el-descriptions-table-border: 1px solid rgba(64, 158, 255, 0.12) !important;
+}
+
+.theme-light .el-descriptions__label {
+  background: rgba(64, 158, 255, 0.05) !important;
+  color: #409eff !important;
+  border-color: rgba(64, 158, 255, 0.12) !important;
+}
+
+.theme-light .el-descriptions__content {
+  background: transparent !important;
+  color: #334155 !important;
+  border-color: rgba(64, 158, 255, 0.12) !important;
+}
+
+/* 时间线 */
+.theme-light .el-timeline-item__node {
+  background: #409eff !important;
+  box-shadow: 0 0 0 4px rgba(64, 158, 255, 0.2) !important;
+}
+
+.theme-light .el-timeline-item__content {
+  color: #334155 !important;
+}
+
+.theme-light .el-timeline-item__timestamp {
+  color: #94a3b8 !important;
+}
+
+/* 折叠面板 */
+.theme-light .el-collapse {
+  --el-collapse-border-color: rgba(64, 158, 255, 0.12) !important;
+  --el-collapse-header-bg-color: rgba(64, 158, 255, 0.03) !important;
+  --el-collapse-content-bg-color: transparent !important;
+  --el-collapse-header-text-color: #334155 !important;
+  --el-collapse-content-text-color: #64748b !important;
+}
+
+/* 滑块 */
+.theme-light .el-slider__runway {
+  background: #e4e7ed !important;
+}
+
+.theme-light .el-slider__bar {
+  background: linear-gradient(90deg, #409eff, #3b82f6) !important;
+}
+
+.theme-light .el-slider__button {
+  border-color: #409eff !important;
+}
+
+/* 开关 */
+.theme-light .el-switch.is-checked .el-switch__core {
+  background: linear-gradient(90deg, #409eff, #3b82f6) !important;
+  border-color: #409eff !important;
+}
+
+/* 进度环 */
+.theme-light .el-progress__text {
+  color: #334155 !important;
+}
+
+/* 徽章 */
+.theme-light .el-badge__content {
+  background: linear-gradient(135deg, #409eff, #8b5cf6) !important;
+  border: none !important;
+}
+
+/* 标签页 */
+.theme-light .el-tabs__nav-wrap::after {
+  background: rgba(64, 158, 255, 0.15) !important;
+}
+
+.theme-light .el-tabs__item {
+  color: #94a3b8 !important;
+}
+
+.theme-light .el-tabs__item.is-active {
+  color: #409eff !important;
+}
+
+.theme-light .el-tabs__active-bar {
+  background: #409eff !important;
+}
+
+/* 空状态 */
+.theme-light .el-empty__description {
+  color: #94a3b8 !important;
+}
+
+/* 加载 */
+.theme-light .el-loading-mask {
+  background: rgba(255, 255, 255, 0.9) !important;
+}
+
+.theme-light .el-loading-spinner .el-loading-text {
+  color: #409eff !important;
+}
+
+.theme-light .el-loading-spinner .path {
+  stroke: #409eff !important;
+}
+
+/* 消息提示 */
+.theme-light .el-message {
+  background: #ffffff !important;
+  border-color: #409eff !important;
+  color: #334155 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 确认框 */
+.theme-light .el-message-box {
+  background: #ffffff !important;
+  border: 1px solid rgba(64, 158, 255, 0.15) !important;
+  border-radius: 12px !important;
+}
+
+.theme-light .el-message-box__title {
+  color: #409eff !important;
+}
+
+.theme-light .el-message-box__message {
+  color: #334155 !important;
+}
+
+/* ---- Layout 浅色化 ---- */
+.theme-light .sidebar {
+  background: #ffffff !important;
+  border-right: 1px solid rgba(64, 158, 255, 0.12) !important;
+}
+
+.theme-light .sidebar .logo {
+  border-bottom: 1px solid rgba(64, 158, 255, 0.1) !important;
+  background: linear-gradient(135deg, rgba(64, 158, 255, 0.03), transparent) !important;
+}
+
+.theme-light .sidebar .logo-text {
+  color: #409eff !important;
+  text-shadow: none;
+}
+
+.theme-light .sidebar .logo-icon {
+  color: #409eff !important;
+  filter: none;
+  animation: none;
+}
+
+.theme-light .sidebar .sidebar-menu :deep(.el-sub-menu__title) {
+  color: #475569 !important;
+}
+
+.theme-light .sidebar .sidebar-menu :deep(.el-sub-menu__title:hover) {
+  background: rgba(64, 158, 255, 0.06) !important;
+  color: #409eff !important;
+}
+
+.theme-light .sidebar .sidebar-menu :deep(.el-menu-item) {
+  color: #64748b !important;
+}
+
+.theme-light .sidebar .sidebar-menu :deep(.el-menu-item:hover) {
+  background: rgba(64, 158, 255, 0.06) !important;
+  color: #409eff !important;
+  border-left-color: #409eff !important;
+}
+
+.theme-light .sidebar .sidebar-menu :deep(.el-menu-item.is-active) {
+  color: #409eff !important;
+  background: rgba(64, 158, 255, 0.1) !important;
+  border-left: 3px solid #409eff !important;
+  text-shadow: none;
+}
+
+.theme-light .sidebar .sidebar-menu :deep(.el-sub-menu .el-menu) {
+  background: rgba(64, 158, 255, 0.02) !important;
+}
+
+.theme-light .header {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-bottom: 1px solid rgba(64, 158, 255, 0.1) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+.theme-light .header .header-btn {
+  color: #64748b !important;
+}
+
+.theme-light .header .header-btn:hover {
+  color: #409eff !important;
+}
+
+.theme-light .cyber-breadcrumb :deep(.el-breadcrumb__inner) {
+  color: #94a3b8 !important;
+}
+
+.theme-light .cyber-breadcrumb :deep(.el-breadcrumb__inner.is-link:hover) {
+  color: #409eff !important;
+}
+
+.theme-light .cyber-breadcrumb :deep(.el-breadcrumb__separator) {
+  color: #94a3b8 !important;
+}
+
+.theme-light .cyber-breadcrumb :deep(.el-breadcrumb__item:last-child .el-breadcrumb__inner) {
+  color: #334155 !important;
+}
+
+/* ---- 步骤条 ---- */
+.theme-light .el-step__title {
+  color: #334155 !important;
+}
+
+.theme-light .el-step__description {
+  color: #94a3b8 !important;
+}
+
+/* ---- 面包屑 ---- */
+.theme-light .el-breadcrumb__inner {
+  color: #94a3b8 !important;
+}
+
+.theme-light .el-breadcrumb__inner.is-link:hover {
+  color: #409eff !important;
+}
+
+/* ---- 状态标签 ---- */
+.theme-light .tag-cyber-success { color: #67c23a; border-color: #67c23a; background: rgba(103, 194, 58, 0.08); }
+.theme-light .tag-cyber-warning { color: #e6a23c; border-color: #e6a23c; background: rgba(230, 162, 60, 0.08); }
+.theme-light .tag-cyber-danger  { color: #f56c6c; border-color: #f56c6c; background: rgba(245, 108, 108, 0.08); }
+.theme-light .tag-cyber-info    { color: #409eff; border-color: #409eff; background: rgba(64, 158, 255, 0.08); }
+.theme-light .tag-cyber-purple  { color: #8b5cf6; border-color: #8b5cf6; background: rgba(139, 92, 246, 0.08); }
+.theme-light .tag-cyber-cyan    { color: #409eff; border-color: #409eff; background: rgba(64, 158, 255, 0.08); }
+
+/* ---- 搜索卡片 ---- */
+.theme-light .search-card,
+.theme-light .search-form {
+  background: #ffffff !important;
+  border: 1px solid rgba(64, 158, 255, 0.12) !important;
+  box-shadow: var(--shadow-sm) !important;
+}

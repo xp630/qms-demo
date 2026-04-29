@@ -170,6 +170,15 @@
           </el-breadcrumb>
         </div>
         <div class="header-right">
+          <!-- 主题切换 -->
+          <el-tooltip :content="themeStore.isDark ? '切换到浅色主题' : '切换到深色主题'" placement="bottom">
+            <el-button text @click="themeStore.toggleTheme" class="theme-toggle-btn">
+              <el-icon size="20">
+                <Sunny v-if="themeStore.isDark" />
+                <Moon v-else />
+              </el-icon>
+            </el-button>
+          </el-tooltip>
           <el-dropdown>
             <span class="user-info">
               <el-avatar :size="32" class="user-avatar">质</el-avatar>
@@ -196,6 +205,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useThemeStore } from '@/store/themeStore'
 import {
   Box, Odometer, QuestionFilled, FolderOpened, EditPen,
   DataAnalysis, Document, Tools, Guide,
@@ -205,10 +215,11 @@ import {
   Calendar, Search, Operation, PieChart,
   User, Sell, DocumentCopy, Histogram,
   Plus, Delete, Edit, View, DataLine,
-  HelpFilled
+  HelpFilled, Sunny, Moon
 } from '@element-plus/icons-vue'
 
 const route = useRoute()
+const themeStore = useThemeStore()
 const isCollapsed = ref(false)
 const sidebarWidth = computed(() => isCollapsed.value ? '64px' : '220px')
 const activeMenu = computed(() => route.path)
@@ -349,6 +360,22 @@ const toggleSidebar = () => {
   }
 
   .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .theme-toggle-btn {
+      color: var(--text-secondary) !important;
+      transition: var(--transition-glow);
+      padding: 8px;
+      border-radius: 8px;
+
+      &:hover {
+        color: var(--neon-cyan) !important;
+        background: rgba(0, 229, 255, 0.1) !important;
+      }
+    }
+
     .user-info {
       display: flex;
       align-items: center;

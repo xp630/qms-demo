@@ -1,7 +1,0 @@
-{
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"~/.claude/skills/gstack/browse/dist/browse goto http://localhost:3002 2>&1\",\"timeout\":30000,\"description\":\"Navigate to QMS demo\"}",
-  "error": "Exit code 1\n[browse] Another instance is starting the server, waiting...\n[browse] Timed out waiting for another instance to start the server\n\n[browse] Another instance is starting the server, waiting...\n[browse] Timed out waiting for another instance to start the server",
-  "timestamp": "2026-04-08T10:00:32.970Z",
-  "retry_count": 2
-}
