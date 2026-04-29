@@ -244,14 +244,14 @@ onUnmounted(() => {
     margin: 0 0 20px 0;
     font-size: 20px;
     font-weight: 600;
-    color: #303133;
+    color: #00e5ff; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
   }
 
   .chart-card {
     .chart-title {
       font-size: 16px;
       font-weight: 600;
-      color: #303133;
+      color: #00e5ff; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
       margin-bottom: 10px;
     }
   }
@@ -260,24 +260,25 @@ onUnmounted(() => {
     margin-bottom: 30px;
 
     .stat-item {
-      background: #f5f7fa;
-      border-radius: 8px;
+      background: rgba(20, 35, 60, 0.6);
+      border: 1px solid rgba(0, 229, 255, 0.15);
+      border-radius: 12px;
       padding: 20px;
       text-align: center;
 
       .stat-label {
         font-size: 14px;
-        color: #909399;
+        color: #94a3b8;
         margin-bottom: 8px;
       }
 
       .stat-value {
         font-size: 28px;
         font-weight: bold;
-        color: #303133;
+        color: #00e5ff; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
 
         &.success {
-          color: #67C23A;
+          color: #10b981;
         }
       }
     }

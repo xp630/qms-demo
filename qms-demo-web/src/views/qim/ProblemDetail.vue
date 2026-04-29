@@ -1,118 +1,255 @@
 <template>
   <div class="page-container">
-    <h2 class="page-title">问题详情</h2>
+    <h2 class="page-title">问题详情 - {{ problem.problemNo }}</h2>
 
-    <el-card shadow="hover" class="detail-card">
-      <template #header>
-        <div class="card-header">
-          <span>问题信息</span>
-          <el-button type="primary" link>编辑</el-button>
-        </div>
-      </template>
-
-      <el-descriptions :column="2" border>
-        <el-descriptions-item label="问题编号">Q2024-001</el-descriptions-item>
+    <!-- 问题头部信息 -->
+    <el-card class="problem-header">
+      <el-descriptions :column="3" border>
+        <el-descriptions-item label="问题编号">{{ problem.problemNo }}</el-descriptions-item>
+        <el-descriptions-item label="问题标题">{{ problem.title }}</el-descriptions-item>
         <el-descriptions-item label="问题等级">
-          <el-tag type="danger" effect="dark">S</el-tag>
+          <el-tag :type="getLevelType(problem.level)" effect="dark">{{ problem.level }}</el-tag>
         </el-descriptions-item>
-        <el-descriptions-item label="问题状态">
-          <el-tag type="warning">处理中</el-tag>
+        <el-descriptions-item label="问题来源">{{ problem.source }}</el-descriptions-item>
+        <el-descriptions-item label="问题阶段">{{ problem.phase }}</el-descriptions-item>
+        <el-descriptions-item label="问题归属">{{ problem.ownership }}</el-descriptions-item>
+        <el-descriptions-item label="责任部门">{{ problem.dept }}</el-descriptions-item>
+        <el-descriptions-item label="责任人">{{ problem.assignee }}</el-descriptions-item>
+        <el-descriptions-item label="当前状态">
+          <el-tag :type="getStatusType(problem.status)">{{ problem.status }}</el-tag>
         </el-descriptions-item>
-        <el-descriptions-item label="责任部门">生产部</el-descriptions-item>
-        <el-descriptions-item label="问题来源">生产过程</el-descriptions-item>
-        <el-descriptions-item label="责任人">张工</el-descriptions-item>
-        <el-descriptions-item label="问题标题" :span="2">焊接不良导致气密性不合格</el-descriptions-item>
-        <el-descriptions-item label="问题描述" :span="2">在生产过程中发现焊缝存在气泡，导致气密性测试不合格，需要返修处理。</el-descriptions-item>
       </el-descriptions>
-
-      <!-- 状态流转 -->
-      <div class="status-flow">
-        <el-steps :active="2" finish-status="success" align-center>
-          <el-step title="问题创建" description="2024-04-01 09:00" />
-          <el-step title="问题分发" description="2024-04-01 10:30" />
-          <el-step title="原因分析" description="2024-04-02 14:00" />
-          <el-step title="措施制定" />
-          <el-step title="效果验证" />
-          <el-step title="问题关闭" />
-        </el-steps>
-      </div>
     </el-card>
 
-    <!-- 处理记录 -->
-    <el-card shadow="hover" class="detail-card">
+    <!-- 4阶段进度 -->
+    <el-card class="progress-card">
       <template #header>
         <div class="card-header">
-          <span>处理记录</span>
-          <el-button type="primary" size="small" @click="handleAddRecord">添加记录</el-button>
+          <span>问题处理进度</span>
+          <span class="progress-text">当前阶段: {{ currentStage.name }}</span>
         </div>
       </template>
+      <el-steps :active="problem.progress" align-center finish-status="success">
+        <el-step v-for="(stage, idx) in stages" :key="idx"
+          :title="stage.name"
+          :description="getStageDescription(idx)"
+        />
+      </el-steps>
+    </el-card>
 
+    <!-- 问题描述 -->
+    <el-card class="info-card">
+      <template #header>
+        <div class="card-header">
+          <span>问题描述</span>
+          <el-button v-if="canEdit" type="primary" size="small" @click="editDescription = true">
+            <el-icon><Edit /></el-icon> 编辑
+          </el-button>
+        </div>
+      </template>
+      <div v-if="!editDescription">{{ problem.description || '暂无描述' }}</div>
+      <el-input v-else v-model="problem.description" type="textarea" :rows="4" @blur="editDescription = false" />
+    </el-card>
+
+    <!-- 问题分发信息 -->
+    <el-card class="info-card">
+      <template #header>
+        <span>分发信息</span>
+      </template>
+      <el-descriptions :column="2" border>
+        <el-descriptions-item label="分发日期">{{ problem.createTime }}</el-descriptions-item>
+        <el-descriptions-item label="计划完成日期">{{ problem.deadline }}</el-descriptions-item>
+        <el-descriptions-item label="延期申请" :span="2">
+          <template v-if="extensionRequest">
+            <el-tag type="warning">{{ extensionRequest.status }}</el-tag>
+            {{ extensionRequest.reason }}
+          </template>
+          <el-button v-else-if="canApplyExtension" type="warning" size="small" @click="showExtensionDialog = true">
+            申请延期
+          </el-button>
+          <span v-else>无</span>
+        </el-descriptions-item>
+      </el-descriptions>
+    </el-card>
+
+    <!-- 短期措施 -->
+    <el-card class="info-card" v-if="problem.progress >= 1">
+      <template #header>
+        <div class="card-header">
+          <span>短期措施</span>
+          <el-button v-if="canEdit" type="primary" size="small" @click="showShortTermDialog = true">
+            {{ shortTermMeasure ? '编辑' : '添加' }}
+          </el-button>
+        </div>
+      </template>
+      <div v-if="shortTermMeasure">
+        <p><strong>措施内容:</strong> {{ shortTermMeasure.content }}</p>
+        <p><strong>实施人:</strong> {{ shortTermMeasure.implementer }}</p>
+        <p><strong>完成时间:</strong> {{ shortTermMeasure.completeTime }}</p>
+      </div>
+      <el-empty v-else description="暂无短期措施" />
+    </el-card>
+
+    <!-- 长期措施 -->
+    <el-card class="info-card" v-if="problem.progress >= 2">
+      <template #header>
+        <div class="card-header">
+          <span>长期措施</span>
+          <el-button v-if="canEdit" type="primary" size="small" @click="showLongTermDialog = true">
+            {{ longTermMeasure ? '编辑' : '添加' }}
+          </el-button>
+        </div>
+      </template>
+      <div v-if="longTermMeasure">
+        <p><strong>措施内容:</strong> {{ longTermMeasure.content }}</p>
+        <p><strong>实施人:</strong> {{ longTermMeasure.implementer }}</p>
+        <p><strong>完成时间:</strong> {{ longTermMeasure.completeTime }}</p>
+      </div>
+      <el-empty v-else description="暂无长期措施" />
+    </el-card>
+
+    <!-- 验证关闭 -->
+    <el-card class="info-card" v-if="problem.progress >= 3">
+      <template #header>
+        <div class="card-header">
+          <span>验证结果</span>
+          <el-button v-if="canVerify" type="success" size="small" @click="showVerifyDialog = true">
+            验证通过关闭
+          </el-button>
+        </div>
+      </template>
+      <div v-if="verifyResult">
+        <el-result icon="success" title="验证通过">
+          <template #sub-title>
+            <p>关闭时间: {{ verifyResult.closeTime }}</p>
+            <p>验证结论: {{ verifyResult.conclusion }}</p>
+          </template>
+        </el-result>
+      </div>
+      <el-empty v-else description="尚未验证" />
+    </el-card>
+
+    <!-- 问题操作日志 -->
+    <el-card class="info-card">
+      <template #header>
+        <span>处理日志</span>
+      </template>
       <el-timeline>
-        <el-timeline-item timestamp="2024-04-02 14:00" type="primary" placement="top">
-          <el-card shadow="hover">
-            <h4>原因分析完成</h4>
-            <p>经分析，焊接不良原因如下：</p>
-            <ol style="margin: 10px 0; padding-left: 20px;">
-              <li>焊枪温度设置偏低</li>
-              <li>焊接速度过快</li>
-              <li>母材表面有油污</li>
-            </ol>
-            <p>分析人：张工</p>
-          </el-card>
-        </el-timeline-item>
-        <el-timeline-item timestamp="2024-04-01 10:30" type="warning" placement="top">
-          <el-card shadow="hover">
-            <h4>问题已分发</h4>
-            <p>问题已分发至生产部，由张工负责处理。</p>
-            <p>要求完成日期：2024-04-10</p>
-          </el-card>
-        </el-timeline-item>
-        <el-timeline-item timestamp="2024-04-01 09:00" type="success" placement="top">
-          <el-card shadow="hover">
-            <h4>问题创建</h4>
-            <p>生产过程中发现焊接不良问题，现场质检员李四提交问题报告。</p>
+        <el-timeline-item v-for="(log, idx) in logs" :key="idx" :timestamp="log.time" placement="top">
+          <el-card>
+            <h4>{{ log.action }}</h4>
+            <p>{{ log.detail }}</p>
+            <p class="log-author">操作人: {{ log.operator }}</p>
           </el-card>
         </el-timeline-item>
       </el-timeline>
     </el-card>
 
-    <!-- 附件 -->
-    <el-card shadow="hover" class="detail-card">
-      <template #header>
-        <div class="card-header">
-          <span>相关附件</span>
-          <el-button type="primary" size="small">上传附件</el-button>
-        </div>
+    <!-- 延期申请弹窗 -->
+    <el-dialog v-model="showExtensionDialog" title="申请延期" width="500px">
+      <el-form :model="extensionForm" label-width="100px">
+        <el-form-item label="原完成日期">{{ problem.deadline }}</el-form-item>
+        <el-form-item label="新完成日期">
+          <el-date-picker v-model="extensionForm.newDeadline" type="date" placeholder="选择新日期" />
+        </el-form-item>
+        <el-form-item label="延期原因">
+          <el-input v-model="extensionForm.reason" type="textarea" :rows="3" placeholder="请输入延期原因" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showExtensionDialog = false">取消</el-button>
+        <el-button type="primary" @click="submitExtension">提交申请</el-button>
       </template>
+    </el-dialog>
 
-      <el-table :data="attachments" border>
-        <el-table-column prop="fileName" label="文件名称" />
-        <el-table-column prop="fileType" label="文件类型" width="100" />
-        <el-table-column prop="fileSize" label="文件大小" width="100" />
-        <el-table-column prop="uploadTime" label="上传时间" width="160" />
-        <el-table-column prop="uploader" label="上传人" width="100" />
-        <el-table-column label="操作" width="120">
-          <template #default>
-            <el-button type="primary" link>下载</el-button>
-            <el-button type="primary" link>预览</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
+    <!-- 验证通过弹窗 -->
+    <el-dialog v-model="showVerifyDialog" title="验证关闭" width="500px">
+      <el-form :model="verifyForm" label-width="100px">
+        <el-form-item label="验证结论">
+          <el-radio-group v-model="verifyForm.conclusion">
+            <el-radio label="通过">通过</el-radio>
+            <el-radio label="不通过">不通过</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="验证说明">
+          <el-input v-model="verifyForm.comment" type="textarea" :rows="3" placeholder="请输入验证说明" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showVerifyDialog = false">取消</el-button>
+        <el-button type="success" @click="submitVerify">确认关闭</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, reactive } from 'vue'
+import { useRoute } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { Edit } from '@element-plus/icons-vue'
+import { useProblemStore } from '@/store/problemStore'
 
-const attachments = ref([
-  { fileName: '焊接不良照片.jpg', fileType: 'JPG', fileSize: '2.5MB', uploadTime: '2024-04-01 09:15', uploader: '李四' },
-  { fileName: '气密性检测报告.pdf', fileType: 'PDF', fileSize: '1.2MB', uploadTime: '2024-04-01 09:20', uploader: '李四' },
-  { fileName: '原因分析.docx', fileType: 'DOCX', fileSize: '156KB', uploadTime: '2024-04-02 14:30', uploader: '张工' }
+const route = useRoute()
+const problemStore = useProblemStore()
+
+const problemId = parseInt(route.params.id || 1)
+const problem = ref(problemStore.problemList.find(p => p.id === problemId) || problemStore.problemList[0])
+
+const editDescription = ref(false)
+const showExtensionDialog = ref(false)
+const showShortTermDialog = ref(false)
+const showLongTermDialog = ref(false)
+const showVerifyDialog = ref(false)
+
+const extensionForm = reactive({ newDeadline: '', reason: '' })
+const verifyForm = reactive({ conclusion: '通过', comment: '' })
+
+const stages = [
+  { name: '原因分析' },
+  { name: '短期措施' },
+  { name: '长期措施' },
+  { name: '验证关闭' }
+]
+
+const currentStage = computed(() => stages[problem.value.progress] || stages[0])
+
+const shortTermMeasure = ref({ content: '增加焊缝检测频次', implementer: '张工', completeTime: '2024-04-10' })
+const longTermMeasure = ref(null)
+const verifyResult = ref(null)
+
+const extensionRequest = computed(() => {
+  return problemStore.extensionRequests.find(r => r.problemNo === problem.value.problemNo)
+})
+
+const canEdit = computed(() => ['待分发', '处理中'].includes(problem.value.status))
+const canApplyExtension = computed(() => !extensionRequest.value && problem.value.status !== '已关闭')
+const canVerify = computed(() => problem.value.progress >= 3)
+
+const getLevelType = (level) => problemStore.getLevelType(level)
+const getStatusType = (status) => problemStore.getStatusType(status)
+const getStageDescription = (idx) => {
+  if (problem.value.progress > idx) return '已完成'
+  if (problem.value.progress === idx) return '进行中'
+  return ''
+}
+
+const logs = ref([
+  { time: '2024-04-01 09:00', action: '问题创建', detail: '问题登记入库', operator: '系统' },
+  { time: '2024-04-01 10:30', action: '问题分发', detail: '分配给张工处理', operator: '质量部' },
+  { time: '2024-04-03 14:00', action: '原因分析', detail: '完成原因分析，确认焊接参数偏移', operator: '张工' }
 ])
 
-const handleAddRecord = () => {
-  // 添加记录逻辑
+const submitExtension = () => {
+  ElMessage.success('延期申请已提交')
+  showExtensionDialog.value = false
+}
+
+const submitVerify = () => {
+  verifyResult.value = { closeTime: new Date().toLocaleDateString(), conclusion: verifyForm.conclusion }
+  problemStore.updateProblemStatus(problem.value.problemNo, '已关闭')
+  ElMessage.success('问题已关闭')
+  showVerifyDialog.value = false
 }
 </script>
 
@@ -122,22 +259,40 @@ const handleAddRecord = () => {
     margin: 0 0 20px 0;
     font-size: 20px;
     font-weight: 600;
-    color: #303133;
+    color: #00e5ff; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
   }
 
-  .detail-card {
-    margin-bottom: 20px;
+  .problem-header { margin-bottom: 16px; }
+
+  .progress-card {
+    margin-bottom: 16px;
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .progress-text {
+        font-size: 14px;
+        color: #67C23A;
+      }
+    }
   }
 
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  .info-card {
+    margin-bottom: 16px;
 
-  .status-flow {
-    margin-top: 30px;
-    padding: 20px 0;
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .log-author {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 8px;
+    }
   }
 }
 </style>

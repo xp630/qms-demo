@@ -154,11 +154,13 @@ const handleCancel = () => {
     margin: 0 0 20px 0;
     font-size: 20px;
     font-weight: 600;
-    color: #303133;
+    color: #00e5ff;
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
   }
 
   .el-card {
-    max-width: 900px;
+    max-width: 960px;
+    margin: 0 auto;
   }
 }
 </style>

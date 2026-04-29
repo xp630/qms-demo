@@ -1,16 +1,20 @@
 <template>
+  <div class="cyber-grid-bg"></div>
   <el-container class="layout-container">
     <!-- 侧边栏 -->
     <el-aside :width="sidebarWidth" class="sidebar">
       <div class="logo">
-        <el-icon :size="24"><Box /></el-icon>
-        <span v-if="!isCollapsed">QMS 系统</span>
+        <el-icon :size="24" class="logo-icon"><Box /></el-icon>
+        <span v-if="!isCollapsed" class="logo-text">QMS 系统</span>
       </div>
       <el-menu
         :default-active="activeMenu"
         :collapse="isCollapsed"
         router
         class="sidebar-menu"
+        :background-color="'transparent'"
+        :text-color="'rgba(224, 240, 255, 0.7)'"
+        :active-text-color="'#00f5ff'"
       >
         <el-menu-item index="/dashboard">
           <el-icon><Odometer /></el-icon>
@@ -29,6 +33,10 @@
           <template #title><el-icon><QuestionFilled /></el-icon><span>QIM质量改进</span></template>
           <el-menu-item index="/qim/problem-list">问题列表</el-menu-item>
           <el-menu-item index="/qim/problem-create">创建问题</el-menu-item>
+          <el-menu-item index="/qim/problem-definition">问题定义</el-menu-item>
+          <el-menu-item index="/qim/problem-confirm">问题确认分发</el-menu-item>
+          <el-menu-item index="/qim/problem-handling">问题处理</el-menu-item>
+          <el-menu-item index="/qim/problem-library">问题库</el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="qsm">
@@ -42,6 +50,9 @@
           <template #title><el-icon><EditPen /></el-icon><span>DAM偏差管理</span></template>
           <el-menu-item index="/dam/apply">偏差申请</el-menu-item>
           <el-menu-item index="/dam/approve">偏差审批</el-menu-item>
+          <el-menu-item index="/dam/implementation">偏差实施</el-menu-item>
+          <el-menu-item index="/dam/close">偏差关闭</el-menu-item>
+          <el-menu-item index="/dam/report">偏差报告</el-menu-item>
           <el-menu-item index="/dam/record">偏差记录</el-menu-item>
         </el-sub-menu>
 
@@ -72,6 +83,7 @@
           <el-menu-item index="/sqm/apqp">APQP管理</el-menu-item>
           <el-menu-item index="/sqm/ppap">PPAP管理</el-menu-item>
           <el-menu-item index="/sqm/performance">绩效管理</el-menu-item>
+          <el-menu-item index="/sqm/incoming-inspection">来料检验</el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="lab">
@@ -106,12 +118,15 @@
           <el-menu-item index="/aim/problem">问题管理</el-menu-item>
           <el-menu-item index="/aim/search">问题检索</el-menu-item>
           <el-menu-item index="/aim/stat">统计分析</el-menu-item>
+          <el-menu-item index="/aim/status">状态管理</el-menu-item>
+          <el-menu-item index="/aim/time">时间管理</el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="outbound">
           <template #title><el-icon><Box /></el-icon><span>外购件质量</span></template>
           <el-menu-item index="/outbound/incoming">来料检验</el-menu-item>
           <el-menu-item index="/outbound/ppm">PPM计算</el-menu-item>
+          <el-menu-item index="/outbound/controlled">受控发运</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </el-aside>
@@ -120,10 +135,10 @@
       <!-- 顶部 -->
       <el-header class="header">
         <div class="header-left">
-          <el-button text @click="toggleSidebar">
+          <el-button text @click="toggleSidebar" class="header-btn">
             <el-icon size="20"><Expand v-if="isCollapsed" /><Fold v-else /></el-icon>
           </el-button>
-          <el-breadcrumb separator="/">
+          <el-breadcrumb separator="/" class="cyber-breadcrumb">
             <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item v-if="$route.meta.module">{{ $route.meta.module }}</el-breadcrumb-item>
             <el-breadcrumb-item>{{ $route.meta.title }}</el-breadcrumb-item>
@@ -132,7 +147,7 @@
         <div class="header-right">
           <el-dropdown>
             <span class="user-info">
-              <el-avatar :size="32" style="background: #409EFF">质量管理员</el-avatar>
+              <el-avatar :size="32" class="user-avatar">质</el-avatar>
               <span class="username">admin</span>
             </span>
             <template #dropdown>
@@ -180,10 +195,13 @@ const toggleSidebar = () => {
 <style scoped lang="scss">
 .layout-container {
   height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
 .sidebar {
-  background: #001529;
+  background: rgba(15, 28, 50, 0.95) !important;
+  border-right: 1px solid rgba(0, 200, 255, 0.2) !important;
   transition: width 0.3s;
   overflow-x: hidden;
 
@@ -193,55 +211,115 @@ const toggleSidebar = () => {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    color: #fff;
-    font-size: 18px;
-    font-weight: bold;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(0, 200, 255, 0.15);
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+      box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+    }
+
+    .logo-icon {
+      color: #00d4ff;
+      filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));
+      animation: glow-pulse 2s ease-in-out infinite;
+    }
+
+    .logo-text {
+      color: #00d4ff;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+    }
   }
 
   .sidebar-menu {
     border-right: none;
-    background: transparent;
-
-    :deep(.el-menu) {
-      background: transparent;
-    }
+    background: transparent !important;
 
     :deep(.el-sub-menu__title) {
-      color: rgba(255,255,255,0.7);
+      color: #8b9dc3 !important;
+      font-size: 14px;
+      transition: var(--transition-glow);
 
       &:hover {
-        background: rgba(255,255,255,0.1);
+        background: rgba(0, 200, 255, 0.08) !important;
+        color: #00d4ff !important;
       }
     }
 
     :deep(.el-menu-item) {
-      color: rgba(255,255,255,0.7);
+      color: #8b9dc3 !important;
+      font-size: 14px;
+      transition: var(--transition-glow);
+      border-left: 3px solid transparent;
 
       &:hover {
-        background: rgba(255,255,255,0.1);
+        background: rgba(0, 200, 255, 0.08) !important;
+        color: #00d4ff !important;
+        border-left-color: #00d4ff;
       }
 
       &.is-active {
-        color: #409EFF;
-        background: rgba(64,158,255,0.15);
+        color: #00d4ff !important;
+        background: rgba(0, 200, 255, 0.12) !important;
+        border-left: 3px solid #00d4ff;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
       }
+    }
+
+    :deep(.el-sub-menu .el-menu) {
+      background: rgba(0, 0, 0, 0.2) !important;
+    }
+
+    :deep(.el-sub-menu__title .el-icon) {
+      color: inherit;
     }
   }
 }
 
 .header {
-  background: #fff;
+  background: rgba(13, 21, 37, 0.98) !important;
+  border-bottom: 1px solid var(--border-default);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  box-shadow: 0 1px 4px rgba(0,21,41,0.08);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
 
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+  .header-btn {
+    color: var(--text-secondary) !important;
+    transition: var(--transition-glow);
+
+    &:hover {
+      color: var(--neon-cyan) !important;
+    }
+  }
+
+  .cyber-breadcrumb {
+    :deep(.el-breadcrumb__inner) {
+      color: var(--text-muted) !important;
+      transition: var(--transition-fast);
+    }
+
+    :deep(.el-breadcrumb__inner.is-link:hover) {
+      color: var(--neon-cyan) !important;
+    }
+
+    :deep(.el-breadcrumb__separator) {
+      color: var(--text-muted) !important;
+    }
+
+    :deep(.el-breadcrumb__item:last-child .el-breadcrumb__inner) {
+      color: var(--text-primary) !important;
+    }
   }
 
   .header-right {
@@ -250,17 +328,37 @@ const toggleSidebar = () => {
       align-items: center;
       gap: 8px;
       cursor: pointer;
+      transition: var(--transition-glow);
+
+      &:hover .username {
+        color: var(--neon-cyan);
+        text-shadow: 0 0 8px var(--neon-cyan);
+      }
+
+      .user-avatar {
+        background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple)) !important;
+        color: var(--bg-primary) !important;
+        font-weight: 700;
+        box-shadow: 0 0 12px rgba(0, 245, 255, 0.4);
+      }
 
       .username {
-        color: #303133;
+        color: var(--text-secondary);
         font-size: 14px;
+        transition: var(--transition-glow);
       }
     }
   }
 }
 
 .main-content {
-  background: #f0f2f5;
+  background: transparent !important;
   padding: 20px;
+  position: relative;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 6px var(--neon-cyan)); }
+  50% { filter: drop-shadow(0 0 15px var(--neon-cyan)); }
 }
 </style>

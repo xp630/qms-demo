@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <h2 class="page-title">偏差申请</h2>
-    <el-card shadow="hover">
+    <el-card shadow="hover" class="form-card">
       <el-form :model="form" label-width="120px">
         <el-form-item label="偏差编号"><el-input v-model="form.damNo" disabled /></el-form-item>
         <el-form-item label="偏差描述" required><el-input v-model="form.description" type="textarea" :rows="3" placeholder="请输入偏差描述" /></el-form-item>
@@ -30,5 +30,8 @@ const handleSubmit = () => ElMessage.success('提交成功')
 </script>
 
 <style scoped lang="scss">
-.page-container { .page-title { margin: 0 0 20px 0; font-size: 20px; font-weight: 600; } }
+.page-container {
+  .page-title { margin: 0 0 20px 0; font-size: 20px; font-weight: 600; }
+  .form-card { max-width: 960px; margin: 0 auto; }
+}
 </style>

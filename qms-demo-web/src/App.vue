@@ -13,8 +13,10 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
+  background: #0d1525;
 }
 #app {
   height: 100%;
+  background: #0d1525;
 }
 </style>

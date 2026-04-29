@@ -5,27 +5,14 @@ $warning-color: #E6A23C;
 $danger-color: #F56C6C;
 $info-color: #909399;
 
-$bg-color: #f0f2f5;
 $header-height: 60px;
 $sidebar-width: 220px;
 
 // 全局样式
 body {
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
-}
-
-// 科技蓝主题覆盖
-.el-menu--horizontal > .el-menu-item.is-active {
-  border-bottom: 3px solid $primary-color;
-}
-
-.el-card {
-  border-radius: 8px;
-}
-
-.el-button--primary {
-  background-color: $primary-color;
-  border-color: $primary-color;
+  font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, sans-serif;
+  background: #0d1525;
+  color: #f1f5f9;
 }
 
 // 页面容器
@@ -38,11 +25,10 @@ body {
   .stat-value {
     font-size: 28px;
     font-weight: bold;
-    color: #303133;
   }
   .stat-label {
     font-size: 14px;
-    color: #909399;
+    color: var(--text-secondary, #7aa0c0);
     margin-top: 8px;
   }
 }
@@ -56,10 +42,11 @@ body {
 
 // 搜索表单
 .search-form {
-  background: #fff;
+  background: rgba(10, 20, 40, 0.6);
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 12px;
   margin-bottom: 16px;
+  border: 1px solid rgba(0, 245, 255, 0.12);
   .el-form-item {
     margin-bottom: 0;
   }

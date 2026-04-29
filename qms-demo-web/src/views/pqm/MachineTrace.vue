@@ -3,7 +3,7 @@
     <h2 class="page-title">机台追溯</h2>
 
     <!-- 搜索表单 -->
-    <div class="search-form">
+    <el-card shadow="hover" class="search-card">
       <el-form :inline="true" :model="searchForm" class="search-form-inline">
         <el-form-item label="计划号">
           <el-input v-model="searchForm.planNo" placeholder="请输入计划号" clearable />
@@ -34,7 +34,7 @@
           </el-button>
         </el-form-item>
       </el-form>
-    </div>
+    </el-card>
 
     <!-- 操作按钮 -->
     <div class="table-toolbar">
@@ -47,11 +47,12 @@
     </div>
 
     <!-- 机台列表 -->
+    <el-card shadow="hover">
     <el-table :data="machineList" stripe border v-loading="loading">
-      <el-table-column prop="machineNo" label="机台流水号" width="130" fixed />
-      <el-table-column prop="planNo" label="计划号" width="130" />
+      <el-table-column prop="machineNo" label="机台流水号" width="140" fixed />
+      <el-table-column prop="planNo" label="计划号" width="140" />
       <el-table-column prop="model" label="机台型" width="100" />
-      <el-table-column prop="totalCount" label="生产总数" width="100" align="right">
+      <el-table-column prop="totalCount" label="生产总数" width="110" align="right">
         <template #default="{ row }">{{ row.totalCount.toLocaleString() }}</template>
       </el-table-column>
       <el-table-column prop="fpyRate" label="FPY(%)" width="90" align="center">
@@ -61,20 +62,21 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="configCode" label="配置代码" width="110" />
+      <el-table-column prop="configCode" label="配置代码" width="120" />
       <el-table-column prop="status" label="状态" width="100" align="center">
         <template #default="{ row }">
           <el-tag :type="getStatusType(row.status)">{{ row.status }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" width="120" />
-      <el-table-column label="操作" width="180" fixed="right">
+      <el-table-column prop="createTime" label="创建时间" width="130" />
+      <el-table-column label="操作" width="200" fixed="right">
         <template #default="{ row }">
           <el-button type="primary" link @click="handleView(row)">查看详情</el-button>
           <el-button type="primary" link @click="handleTrace(row)">追溯</el-button>
         </template>
       </el-table-column>
     </el-table>
+    </el-card>
 
     <!-- 分页 -->
     <div class="pagination-container">
@@ -126,15 +128,41 @@
             <el-table-column prop="partName" label="零件名称" />
             <el-table-column prop="serialNo" label="序列号" width="150" />
             <el-table-column prop="supplier" label="供应商" />
+            <el-table-column label="操作" width="80" align="center">
+              <template #default="{ row }">
+                <el-button type="primary" link size="small" @click="handleTraceComponent(row)">追溯</el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </el-tab-pane>
       </el-tabs>
+    </el-dialog>
+
+    <!-- 关键件追溯详情 -->
+    <el-dialog v-model="componentDialogVisible" title="关键件追溯详情" width="700px" destroy-on-close>
+      <el-descriptions :column="2" border v-if="currentComponent">
+        <el-descriptions-item label="零件号">{{ currentComponent.partNo }}</el-descriptions-item>
+        <el-descriptions-item label="零件名称">{{ currentComponent.partName }}</el-descriptions-item>
+        <el-descriptions-item label="序列号">{{ currentComponent.serialNo }}</el-descriptions-item>
+        <el-descriptions-item label="供应商">{{ currentComponent.supplier }}</el-descriptions-item>
+        <el-descriptions-item label="装配机台">{{ currentComponent.machineNo }}</el-descriptions-item>
+        <el-descriptions-item label="装配时间">{{ currentComponent.installTime }}</el-descriptions-item>
+        <el-descriptions-item label="来料批次" :span="2">{{ currentComponent.batchNo }}</el-descriptions-item>
+      </el-descriptions>
+
+      <el-divider content-position="left">追溯链路</el-divider>
+      <el-steps :active="traceActive" finish-status="success" align-center>
+        <el-step title="来料检验" :description="currentComponent.incomingDate" />
+        <el-step title="入库存储" :description="currentComponent.storageDate" />
+        <el-step title="装配使用" :description="currentComponent.installTime" />
+        <el-step title="成品发运" :description="currentComponent.shipmentNo || '—'" />
+      </el-steps>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Search, Refresh, Download } from '@element-plus/icons-vue'
 import { machineList as mockMachineList } from '@/mock'
@@ -156,6 +184,9 @@ const pagination = reactive({
 
 const detailVisible = ref(false)
 const currentMachine = ref(null)
+const componentDialogVisible = ref(false)
+const currentComponent = ref(null)
+const traceActive = ref(2)
 
 const configData = ref([
   { item: '处理器', value: 'Intel i7-12700K', updateTime: '2024-01-15' },
@@ -170,9 +201,9 @@ const productionData = ref([
 ])
 
 const componentData = ref([
-  { partNo: 'P-001', partName: 'ECU模块', serialNo: 'ECU20240315001', supplier: '供应商A' },
-  { partNo: 'P-002', partName: '电池包', serialNo: 'BAT20240315002', supplier: '供应商B' },
-  { partNo: 'P-003', partName: '扭矩传感器', serialNo: 'TS20240315003', supplier: '供应商C' }
+  { partNo: 'P-001', partName: 'ECU模块', serialNo: 'ECU20240315001', supplier: '供应商A', machineNo: 'M20240001', installTime: '2024-03-15 10:30', batchNo: 'INC2024-0015', incomingDate: '2024-03-10', storageDate: '2024-03-12', shipmentNo: 'CS2024-003' },
+  { partNo: 'P-002', partName: '电池包', serialNo: 'BAT20240315002', supplier: '供应商B', machineNo: 'M20240001', installTime: '2024-03-15 10:35', batchNo: 'INC2024-0016', incomingDate: '2024-03-11', storageDate: '2024-03-13', shipmentNo: 'CS2024-003' },
+  { partNo: 'P-003', partName: '扭矩传感器', serialNo: 'TS20240315003', supplier: '供应商C', machineNo: 'M20240001', installTime: '2024-03-15 10:40', batchNo: 'INC2024-0017', incomingDate: '2024-03-12', storageDate: '2024-03-14', shipmentNo: '' }
 ])
 
 const getStatusType = (status) => {
@@ -210,6 +241,12 @@ const handleView = (row) => {
   detailVisible.value = true
 }
 
+const handleTraceComponent = (row) => {
+  currentComponent.value = row
+  traceActive.value = row.shipmentNo ? 3 : 2
+  componentDialogVisible.value = true
+}
+
 const handleTrace = (row) => {
   ElMessage.info('跳转至追溯页面')
 }
@@ -221,10 +258,6 @@ const handleSizeChange = (val) => {
 const handlePageChange = (val) => {
   pagination.page = val
 }
-
-onMounted(() => {
-  // 初始化
-})
 </script>
 
 <style scoped lang="scss">
@@ -233,20 +266,11 @@ onMounted(() => {
     margin: 0 0 20px 0;
     font-size: 20px;
     font-weight: 600;
-    color: #303133;
+    color: #00e5ff; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
   }
 
-  .search-form {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
+  .search-card {
     margin-bottom: 16px;
-
-    .search-form-inline {
-      :deep(.el-form-item) {
-        margin-bottom: 0;
-      }
-    }
   }
 
   .table-toolbar {

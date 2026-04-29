@@ -59,6 +59,30 @@ const routes = [
         component: () => import('@/views/qim/ProblemDetail.vue'),
         meta: { title: '问题详情', icon: 'Document', module: 'QIM' }
       },
+      {
+        path: 'qim/problem-definition',
+        name: 'ProblemDefinition',
+        component: () => import('@/views/qim/ProblemDefinition.vue'),
+        meta: { title: '问题定义', icon: 'EditPen', module: 'QIM' }
+      },
+      {
+        path: 'qim/problem-confirm',
+        name: 'ProblemConfirm',
+        component: () => import('@/views/qim/ProblemConfirm.vue'),
+        meta: { title: '问题确认分发', icon: 'Checked', module: 'QIM' }
+      },
+      {
+        path: 'qim/problem-handling',
+        name: 'ProblemHandling',
+        component: () => import('@/views/qim/ProblemHandling.vue'),
+        meta: { title: '问题处理', icon: 'Operation', module: 'QIM' }
+      },
+      {
+        path: 'qim/problem-library',
+        name: 'ProblemLibrary',
+        component: () => import('@/views/qim/ProblemLibrary.vue'),
+        meta: { title: '问题库', icon: 'Collection', module: 'QIM' }
+      },
       // QSM 质量文件
       {
         path: 'qsm/document',
@@ -90,6 +114,24 @@ const routes = [
         name: 'DamApprove',
         component: () => import('@/views/dam/Approve.vue'),
         meta: { title: '偏差审批', icon: 'Checked', module: 'DAM' }
+      },
+      {
+        path: 'dam/implementation',
+        name: 'DamImplementation',
+        component: () => import('@/views/dam/DeviationImplementation.vue'),
+        meta: { title: '偏差实施', icon: 'Timer', module: 'DAM' }
+      },
+      {
+        path: 'dam/close',
+        name: 'DamClose',
+        component: () => import('@/views/dam/DeviationClose.vue'),
+        meta: { title: '偏差关闭', icon: 'CircleCheck', module: 'DAM' }
+      },
+      {
+        path: 'dam/report',
+        name: 'DamReport',
+        component: () => import('@/views/dam/DeviationReport.vue'),
+        meta: { title: '偏差报告', icon: 'DataLine', module: 'DAM' }
       },
       {
         path: 'dam/record',
@@ -178,6 +220,12 @@ const routes = [
         name: 'Performance',
         component: () => import('@/views/sqm/Performance.vue'),
         meta: { title: '绩效管理', icon: 'DataLine', module: 'SQM' }
+      },
+      {
+        path: 'sqm/incoming-inspection',
+        name: 'IncomingInspection',
+        component: () => import('@/views/sqm/IncomingInspection.vue'),
+        meta: { title: '来料检验', icon: 'Box', module: 'SQM' }
       },
       // LAB 实验室
       {
@@ -268,6 +316,18 @@ const routes = [
         component: () => import('@/views/aim/Stat.vue'),
         meta: { title: '统计分析', icon: 'Histogram', module: 'AIM' }
       },
+      {
+        path: 'aim/status',
+        name: 'AimStatus',
+        component: () => import('@/views/aim/Status.vue'),
+        meta: { title: '状态管理', icon: 'CircleCheck', module: 'AIM' }
+      },
+      {
+        path: 'aim/time',
+        name: 'AimTime',
+        component: () => import('@/views/aim/Time.vue'),
+        meta: { title: '时间管理', icon: 'Timer', module: 'AIM' }
+      },
       // 外购件质量
       {
         path: 'outbound/incoming',
@@ -280,6 +340,12 @@ const routes = [
         name: 'PPM',
         component: () => import('@/views/outbound/PPM.vue'),
         meta: { title: 'PPM计算', icon: 'Coin', module: 'OUTBOUND' }
+      },
+      {
+        path: 'outbound/controlled',
+        name: 'ControlledShipping',
+        component: () => import('@/views/outbound/Controlled.vue'),
+        meta: { title: '受控发运', icon: 'Van', module: 'OUTBOUND' }
       }
     ]
   }

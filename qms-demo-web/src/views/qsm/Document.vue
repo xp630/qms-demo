@@ -81,7 +81,7 @@ const viewType = ref('list')
     margin: 0 0 20px 0;
     font-size: 20px;
     font-weight: 600;
-    color: #303133;
+    color: #00e5ff; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
   }
 
   .card-header {
@@ -101,7 +101,7 @@ const viewType = ref('list')
     .doc-title {
       font-size: 16px;
       font-weight: 600;
-      color: #303133;
+      color: #00e5ff; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
       margin-bottom: 10px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -117,7 +117,7 @@ const viewType = ref('list')
 
     .doc-meta {
       font-size: 12px;
-      color: #909399;
+      color: #94a3b8;
       margin-bottom: 15px;
       display: flex;
       justify-content: space-between;

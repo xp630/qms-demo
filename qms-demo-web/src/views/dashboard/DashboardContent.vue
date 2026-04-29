@@ -1,122 +1,122 @@
 <template>
   <div class="dashboard">
-    <!-- 统计卡片 -->
-    <el-row :gutter="20" class="stat-row">
-      <el-col :span="6">
-        <el-card shadow="hover" class="stat-card">
-          <div class="stat-icon" style="background: #409EFF">
-            <el-icon :size="32"><Box /></el-icon>
+    <!-- 第一行：4个核心指标卡片 -->
+    <el-row :gutter="12" style="margin-bottom: 12px;" align="stretch">
+      <el-col :span="6" v-for="(stat, index) in statCards" :key="index" class="stretch-col">
+        <el-card class="stat-card glow-card" shadow="hover">
+          <div class="stat-content">
+            <div class="stat-info">
+              <div class="stat-label">{{ stat.label }}</div>
+              <div class="stat-value stat-value-animated" :class="stat.colorClass">{{ stat.value }}</div>
+            </div>
           </div>
-          <div class="stat-info">
-            <div class="stat-value">{{ stats.machineCount.toLocaleString() }}</div>
-            <div class="stat-label">机台总数</div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="hover" class="stat-card">
-          <div class="stat-icon" style="background: #E6A23C">
-            <el-icon :size="32"><QuestionFilled /></el-icon>
-          </div>
-          <div class="stat-info">
-            <div class="stat-value">{{ stats.pendingProblems }}</div>
-            <div class="stat-label">待处理问题</div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="hover" class="stat-card">
-          <div class="stat-icon" style="background: #67C23A">
-            <el-icon :size="32"><CircleCheck /></el-icon>
-          </div>
-          <div class="stat-info">
-            <div class="stat-value">{{ stats.fpyRate }}%</div>
-            <div class="stat-label">FPY达标率</div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="hover" class="stat-card">
-          <div class="stat-icon" style="background: #F56C6C">
-            <el-icon :size="32"><Warning /></el-icon>
-          </div>
-          <div class="stat-info">
-            <div class="stat-value">{{ stats.dpu }}</div>
-            <div class="stat-label">DPU均值</div>
+          <div class="stat-trend" v-if="stat.trend !== undefined">
+            <span :class="stat.trend >= 0 ? 'up' : 'down'">
+              {{ stat.trend >= 0 ? '↑' : '↓' }} {{ Math.abs(stat.trend) }}%
+            </span>
           </div>
         </el-card>
       </el-col>
     </el-row>
 
-    <!-- 图表区域 -->
-    <el-row :gutter="20" class="chart-row">
-      <el-col :span="12">
-        <el-card shadow="hover">
+    <!-- 第二行：缺陷TOP5 + 问题部门分布 + 机台状态 -->
+    <el-row :gutter="12" style="margin-bottom: 12px;" align="stretch">
+      <el-col :span="8" class="stretch-col">
+        <el-card class="glow-card" style="height: 100%;">
           <template #header>
             <div class="card-header">
-              <span>FPY趋势</span>
-              <el-radio-group v-model="fpyPeriod" size="small">
-                <el-radio-button label="月">月</el-radio-button>
-                <el-radio-button label="周">周</el-radio-button>
-                <el-radio-button label="日">日</el-radio-button>
-              </el-radio-group>
+              <span class="card-title">缺陷TOP5</span>
             </div>
           </template>
-          <div ref="fpyChartRef" class="chart-container"></div>
+          <div ref="defectChartRef" style="height: 160px;"></div>
         </el-card>
       </el-col>
-      <el-col :span="12">
-        <el-card shadow="hover">
+      <el-col :span="8" class="stretch-col">
+        <el-card class="glow-card" style="height: 100%;">
           <template #header>
             <div class="card-header">
-              <span>DPU趋势</span>
-              <el-radio-group v-model="dpuPeriod" size="small">
-                <el-radio-button label="月">月</el-radio-button>
-                <el-radio-button label="周">周</el-radio-button>
-                <el-radio-button label="日">日</el-radio-button>
-              </el-radio-group>
+              <span class="card-title">问题部门分布</span>
             </div>
           </template>
-          <div ref="dpuChartRef" class="chart-container"></div>
+          <div ref="deptChartRef" style="height: 160px;"></div>
+        </el-card>
+      </el-col>
+      <el-col :span="8" class="stretch-col">
+        <el-card class="glow-card" style="height: 100%;">
+          <template #header>
+            <div class="card-header">
+              <span class="card-title">机台状态</span>
+            </div>
+          </template>
+          <div ref="machineStatusChartRef" style="height: 160px;"></div>
         </el-card>
       </el-col>
     </el-row>
 
-    <!-- 下方两列 -->
-    <el-row :gutter="20" class="bottom-row">
-      <el-col :span="12">
-        <el-card shadow="hover">
+    <!-- 第三行：问题动态 + 待办 + FPY趋势 -->
+    <el-row :gutter="12" align="stretch">
+      <el-col :span="8" class="stretch-col">
+        <el-card class="glow-card" style="height: 100%;">
           <template #header>
             <div class="card-header">
-              <span>待办任务</span>
-              <el-button type="primary" link size="small">查看全部</el-button>
+              <span class="card-title">问题处理动态</span>
+              <el-button type="primary" size="small" link @click="$router.push('/qim/problem-list')">全部</el-button>
             </div>
           </template>
-          <el-table :data="todoList" style="width: 100%">
-            <el-table-column prop="title" label="任务名称" show-overflow-tooltip />
-            <el-table-column prop="type" label="类型" width="100">
+          <el-table :data="problemDynamic" size="small">
+            <el-table-column prop="problemNo" label="问题编号" width="100" />
+            <el-table-column prop="title" label="问题标题" show-overflow-tooltip />
+            <el-table-column prop="level" label="等级" width="50" align="center">
               <template #default="{ row }">
-                <el-tag :type="getTypeTagType(row.type)" size="small">{{ row.type }}</el-tag>
+                <el-tag :type="getLevelType(row.level)" effect="dark" size="small">{{ row.level }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="level" label="级别" width="80">
+            <el-table-column prop="status" label="状态" width="70" align="center">
               <template #default="{ row }">
-                <el-tag :type="getLevelTagType(row.level)" size="small">{{ row.level }}</el-tag>
+                <el-tag :type="getStatusType(row.status)" size="small">{{ row.status }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="deadline" label="截止日期" width="110" />
           </el-table>
         </el-card>
       </el-col>
-      <el-col :span="12">
-        <el-card shadow="hover">
+
+      <el-col :span="8" class="stretch-col">
+        <el-card class="glow-card" style="height: 100%;">
           <template #header>
             <div class="card-header">
-              <span>缺陷TOP10</span>
-              <el-button type="primary" link size="small">查看全部</el-button>
+              <span class="card-title">待办任务</span>
+              <el-badge :value="todoList.length" :max="99">
+                <el-button type="primary" size="small" link>更多</el-button>
+              </el-badge>
             </div>
           </template>
-          <div ref="defectTopChartRef" class="chart-container"></div>
+          <div class="todo-list">
+            <div v-for="todo in todoList.slice(0, 5)" :key="todo.id" class="todo-item">
+              <div class="todo-info">
+                <el-tag :type="getLevelTagType(todo.level)" size="small" effect="dark">{{ todo.level }}</el-tag>
+                <span class="todo-title">{{ todo.title }}</span>
+              </div>
+              <div class="todo-meta">
+                <span class="todo-type">{{ todo.type }}</span>
+                <span class="todo-deadline" :class="{ overdue: isOverdue(todo.deadline) }">{{ todo.deadline }}</span>
+              </div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+
+      <el-col :span="8" class="stretch-col">
+        <el-card class="glow-card" style="height: 100%;">
+          <template #header>
+            <div class="card-header">
+              <span class="card-title">FPY趋势</span>
+              <el-radio-group v-model="fpyPeriod" size="small" class="cyber-radio">
+                <el-radio-button label="monthly">月</el-radio-button>
+                <el-radio-button label="weekly">周</el-radio-button>
+              </el-radio-group>
+            </div>
+          </template>
+          <div ref="fpyChartRef" style="height: 100%;"></div>
         </el-card>
       </el-col>
     </el-row>
@@ -124,144 +124,216 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import * as echarts from 'echarts'
-import { Box, QuestionFilled, CircleCheck, Warning } from '@element-plus/icons-vue'
-import { dashboardStats, fpyTrendData, dpuTrendData, todoList, defectTop10 } from '@/mock'
+import { Calendar, Box, QuestionFilled, Warning, Timer, Checked } from '@element-plus/icons-vue'
+import { useMachineStore } from '@/store/machineStore'
+import { useProblemStore } from '@/store/problemStore'
+import { useQualityStore } from '@/store/qualityStore'
+import { getProgressColor } from '@/utils/qualityColors'
 
-const stats = dashboardStats
-const fpyPeriod = ref('月')
-const dpuPeriod = ref('月')
+const router = useRouter()
+const machineStore = useMachineStore()
+const problemStore = useProblemStore()
+const qualityStore = useQualityStore()
+
+const fpyPeriod = ref('monthly')
+const dpuPeriod = ref('monthly')
+const bulletinEnabled = ref(true)
 
 let fpyChart = null
-let dpuChart = null
-let defectTopChart = null
-const fpyChartRef = ref(null)
-const dpuChartRef = ref(null)
-const defectTopChartRef = ref(null)
+let defectChart = null
+let machineStatusChart = null
+let deptChart = null
 
-const getTypeTagType = (type) => {
-  const map = { '待审批': 'warning', '待验证': 'info', '待处理': 'success' }
-  return map[type] || ''
-}
+const fpyChartRef = ref(null)
+const defectChartRef = ref(null)
+const machineStatusChartRef = ref(null)
+const deptChartRef = ref(null)
+
+const statCards = reactive([
+  { label: '机台总数', value: 1256, icon: Box, color: '#409EFF', colorClass: 'cyan', trend: 2.3 },
+  { label: '待处理问题', value: 23, icon: QuestionFilled, color: '#fbbf24', colorClass: 'orange', trend: -5.1 },
+  { label: 'FPY达标率', value: '98.5%', icon: Checked, color: '#67C23A', colorClass: 'green', trend: 0.8 },
+  { label: '待审核偏差', value: 8, icon: Warning, color: '#F56C6C', colorClass: 'red', trend: 12.5 }
+])
+
+const problemDynamic = ref([
+  { problemNo: 'Q2024-001', title: '焊接不良导致气密性不合格', level: 'S', status: '处理中', progress: 2 },
+  { problemNo: 'Q2024-002', title: '来料尺寸超差', level: 'A', status: '待分发', progress: 0 },
+  { problemNo: 'Q2024-004', title: '扭矩数据异常', level: 'A', status: '处理中', progress: 1 },
+  { problemNo: 'Q2024-005', title: '零部件装配偏差', level: 'C', status: '待验证', progress: 3 }
+])
+
+const todoList = ref([
+  { id: 1, title: '审核M20240006偏差申请', type: '待审批', level: '紧急', deadline: '2024-04-08' },
+  { id: 2, title: '确认焊接工位返修结果', type: '待验证', level: '重要', deadline: '2024-04-09' },
+  { id: 3, title: '更新APQP进度报告', type: '待处理', level: '普通', deadline: '2024-04-10' },
+  { id: 4, title: '批准扭矩校准计划', type: '待审批', level: '重要', deadline: '2024-04-08' },
+  { id: 5, title: '复核来料检验报告', type: '待处理', level: '普通', deadline: '2024-04-11' }
+])
+
+const qualityBulletin = ref([
+  { type: 'S级问题', message: '焊接不良导致气密性不合格 - 待处理' },
+  { type: 'FPY告警', message: '类型B机台FPY低于目标值' },
+  { type: '待审批', message: '5项偏差申请待审批' },
+  { type: '计量临期', message: '3台计量设备即将到期' }
+])
+
+const getLevelType = (level) => problemStore.getLevelType(level)
+const getStatusType = (status) => problemStore.getStatusType(status)
 
 const getLevelTagType = (level) => {
   const map = { '紧急': 'danger', '重要': 'warning', '普通': 'info' }
-  return map[level] || ''
+  return map[level] || 'info'
 }
 
-const initFpyChart = () => {
-  if (!fpyChartRef.value) return
+const getBulletinType = (type) => {
+  const map = { 'S级问题': 'error', 'FPY告警': 'warning', '待审批': 'info', '计量临期': 'warning' }
+  return map[type] || 'info'
+}
+
+const isOverdue = (deadline) => {
+  return new Date(deadline) < new Date()
+}
+
+const initCharts = () => {
   fpyChart = echarts.init(fpyChartRef.value)
   fpyChart.setOption({
-    tooltip: { trigger: 'axis' },
-    legend: { data: ['实际值', '目标值'], bottom: 0 },
-    grid: { top: 20, right: 20, bottom: 40, left: 50 },
-    xAxis: { type: 'category', data: fpyTrendData.months },
-    yAxis: { type: 'value', min: 95, max: 100, axisLabel: { formatter: '{value}%' } },
+    tooltip: { trigger: 'axis', backgroundColor: 'rgba(6, 9, 18, 0.95)', borderColor: '#00e5ff', textStyle: { color: '#f0f4ff' } },
+    legend: { data: ['实际值', '目标值'], bottom: 0, textStyle: { color: '#94a3b8' } },
+    grid: { top: 8, right: 15, bottom: 25, left: 40 },
+    xAxis: { type: 'category', data: machineStore.fpyTrendData.months, axisLabel: { color: '#94a3b8', fontSize: 10 }, axisLine: { lineStyle: { color: '#00e5ff' } } },
+    yAxis: { type: 'value', min: 95, max: 100, axisLabel: { formatter: '{value}%', color: '#94a3b8', fontSize: 10 }, splitLine: { lineStyle: { color: 'rgba(0, 229, 255, 0.1)' } } },
     series: [
-      { name: '实际值', type: 'line', smooth: true, data: fpyTrendData.actual, itemStyle: { color: '#409EFF' } },
-      { name: '目标值', type: 'line', smooth: true, data: fpyTrendData.target, itemStyle: { color: '#67C23A' }, lineStyle: { type: 'dashed' } }
+      { name: '实际值', type: 'line', data: machineStore.fpyTrendData.actual, smooth: true, itemStyle: { color: '#10b981' }, lineStyle: { color: '#10b981' } },
+      { name: '目标值', type: 'line', data: machineStore.fpyTrendData.target, smooth: true, lineStyle: { type: 'dashed', color: '#00e5ff' }, itemStyle: { color: '#00e5ff' } }
     ]
   })
-}
 
-const initDpuChart = () => {
-  if (!dpuChartRef.value) return
-  dpuChart = echarts.init(dpuChartRef.value)
-  dpuChart.setOption({
-    tooltip: { trigger: 'axis' },
-    legend: { data: ['实际值', '目标值'], bottom: 0 },
-    grid: { top: 20, right: 20, bottom: 40, left: 50 },
-    xAxis: { type: 'category', data: dpuTrendData.months },
-    yAxis: { type: 'value', min: 0, max: 5 },
-    series: [
-      { name: '实际值', type: 'bar', data: dpuTrendData.actual, itemStyle: { color: '#409EFF' } },
-      { name: '目标值', type: 'line', smooth: true, data: dpuTrendData.target, itemStyle: { color: '#F56C6C' }, lineStyle: { type: 'dashed' } }
-    ]
-  })
-}
-
-const initDefectTopChart = () => {
-  if (!defectTopChartRef.value) return
-  defectTopChart = echarts.init(defectTopChartRef.value)
-  defectTopChart.setOption({
-    tooltip: { trigger: 'axis', axisAngle: -90 },
-    grid: { top: 10, right: 100, bottom: 10, left: 10 },
-    xAxis: { type: 'value' },
-    yAxis: { type: 'category', data: defectTop10.map(d => d.type).reverse() },
+  defectChart = echarts.init(defectChartRef.value)
+  const defectData = machineStore.defectTop10.slice(0, 5)
+  const trendColors = { '上升': '#ef4444', '下降': '#10b981', '持平': '#c084fc' }
+  defectChart.setOption({
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(6, 9, 18, 0.95)', borderColor: '#00e5ff', textStyle: { color: '#f0f4ff' } },
+    legend: {
+      data: ['上升', '下降', '持平'],
+      bottom: 0,
+      textStyle: { color: '#94a3b8', fontSize: 9 },
+      itemWidth: 12,
+      itemHeight: 8
+    },
+    grid: { top: 5, right: 60, bottom: 30, left: 5 },
+    xAxis: { type: 'value', axisLabel: { color: '#94a3b8', fontSize: 9 }, axisLine: { lineStyle: { color: '#00e5ff' } }, splitLine: { lineStyle: { color: 'rgba(0, 229, 255, 0.1)' } } },
+    yAxis: { type: 'category', data: defectData.map(d => d.type).reverse(), axisLabel: { fontSize: 9, color: '#94a3b8' } },
     series: [{
       type: 'bar',
-      data: defectTop10.map(d => d.count).reverse(),
-      itemStyle: {
-        color: (params) => {
-          const colors = ['#F56C6C', '#E6A23C', '#E6A23C', '#67C23A', '#67C23A', '#409EFF', '#409EFF', '#909399', '#909399', '#909399']
-          return colors[params.dataIndex]
-        }
-      },
-      label: { show: true, position: 'right', formatter: '{c}' }
+      data: defectData.map(d => ({ value: d.count, itemStyle: { color: trendColors[d.trend] || '#c084fc' } })).reverse(),
+      label: { show: true, position: 'right', formatter: '{c}', color: '#94a3b8', fontSize: 9 }
     }]
+  })
+
+  machineStatusChart = echarts.init(machineStatusChartRef.value)
+  const machineData = machineStore.getAllMachines()
+  const statusCount = { '正常': 0, '异常': 0, '维护中': 0 }
+  machineData.forEach(m => { statusCount[m.status] = (statusCount[m.status] || 0) + 1 })
+  const statusColors = { '正常': '#10b981', '异常': '#ef4444', '维护中': '#f59e0b' }
+  const statusEntries = Object.entries(statusCount)
+  machineStatusChart.setOption({
+    tooltip: { trigger: 'item', backgroundColor: 'rgba(6, 9, 18, 0.95)', borderColor: '#00e5ff', textStyle: { color: '#f0f4ff' } },
+    legend: { orient: 'vertical', right: 10, top: 'center', textStyle: { color: '#94a3b8', fontSize: 10 }, itemWidth: 12, itemHeight: 12 },
+    series: [{
+      type: 'pie',
+      radius: ['40%', '70%'],
+      center: ['35%', '50%'],
+      label: { show: false },
+      labelLine: { show: false },
+      data: statusEntries.map(([name, value]) => ({ name, value, itemStyle: { color: statusColors[name] } })),
+      itemStyle: { borderColor: '#0d1525', borderWidth: 2 }
+    }]
+  })
+
+  deptChart = echarts.init(deptChartRef.value)
+  const deptData = {}
+  const deptColors = ['#00e5ff', '#c084fc', '#10b981', '#f59e0b', '#ef4444']
+  problemStore.problemList.forEach(p => { deptData[p.dept] = (deptData[p.dept] || 0) + 1 })
+  const deptKeys = Object.keys(deptData)
+  deptChart.setOption({
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(6, 9, 18, 0.95)', borderColor: '#00e5ff', textStyle: { color: '#f0f4ff' } },
+    legend: { data: deptKeys, bottom: 0, textStyle: { color: '#94a3b8', fontSize: 9 }, itemWidth: 12, itemHeight: 8 },
+    grid: { top: 5, right: 5, bottom: 30, left: 5 },
+    xAxis: { type: 'category', data: deptKeys, axisLabel: { rotate: 0, fontSize: 9, color: '#94a3b8' }, axisLine: { lineStyle: { color: '#00e5ff' } } },
+    yAxis: { type: 'value', axisLabel: { color: '#94a3b8', fontSize: 9 }, splitLine: { lineStyle: { color: 'rgba(0, 229, 255, 0.1)' } } },
+    series: [{ type: 'bar', data: deptKeys.map((k, i) => ({ value: deptData[k], itemStyle: { color: deptColors[i % deptColors.length] } })) }]
   })
 }
 
 const handleResize = () => {
   fpyChart?.resize()
-  dpuChart?.resize()
-  defectTopChart?.resize()
+  defectChart?.resize()
+  machineStatusChart?.resize()
+  deptChart?.resize()
 }
 
 onMounted(() => {
-  initFpyChart()
-  initDpuChart()
-  initDefectTopChart()
+  initCharts()
   window.addEventListener('resize', handleResize)
 })
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize)
   fpyChart?.dispose()
-  dpuChart?.dispose()
-  defectTopChart?.dispose()
+  defectChart?.dispose()
+  machineStatusChart?.dispose()
+  deptChart?.dispose()
 })
 </script>
 
 <style scoped lang="scss">
 .dashboard {
-  .stat-row {
-    margin-bottom: 20px;
+  :deep(.el-col) {
+    display: flex;
+    flex-direction: column;
   }
 
-  .chart-row, .bottom-row {
-    margin-bottom: 20px;
+  :deep(.el-card) {
+    flex: 1;
   }
 
   .stat-card {
+    padding: 14px 16px;
     display: flex;
-    align-items: center;
-    padding: 10px;
+    flex-direction: column;
+    justify-content: center;
 
-    .stat-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 8px;
+    .stat-content {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      color: #fff;
-      margin-right: 16px;
+
+      .stat-info {
+        .stat-label {
+          font-size: 12px;
+          color: #8b9dc3;
+          margin-bottom: 6px;
+          font-weight: 500;
+        }
+
+        .stat-value {
+          font-size: 26px;
+          font-weight: 700;
+        }
+      }
     }
 
-    .stat-info {
-      .stat-value {
-        font-size: 28px;
-        font-weight: bold;
-        color: #303133;
-      }
-      .stat-label {
-        font-size: 14px;
-        color: #909399;
-        margin-top: 4px;
-      }
+    .stat-trend {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 6px;
+
+      .up { color: #10b981; }
+      .down { color: #ef4444; }
     }
   }
 
@@ -269,10 +341,51 @@ onUnmounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 8px 12px;
+
+    .card-title {
+      color: #00e5ff;
+      font-weight: 600;
+      font-size: 13px;
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+    }
   }
 
-  .chart-container {
-    height: 280px;
+  .todo-list {
+    max-height: 220px;
+    overflow-y: auto;
+
+    .todo-item {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(0, 229, 255, 0.06);
+
+      &:last-child { border-bottom: none; }
+
+      .todo-info {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 3px;
+
+        .todo-title {
+          font-size: 12px;
+          color: #f0f4ff;
+        }
+      }
+
+      .todo-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #64748b;
+
+        .todo-deadline.overdue { color: #ef4444; }
+      }
+    }
+
+    &::-webkit-scrollbar { width: 3px; }
+    &::-webkit-scrollbar-track { background: rgba(0, 229, 255, 0.05); }
+    &::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.2); border-radius: 2px; }
   }
 }
 </style>

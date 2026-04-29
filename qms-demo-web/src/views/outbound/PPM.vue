@@ -17,4 +17,4 @@ import { ref } from 'vue'
 import { ppmData } from '@/mock'
 const tableData = ref([...ppmData])
 </script>
-<style scoped lang="scss">.page-container { .page-title { margin: 0 0 20px 0; font-size: 20px; font-weight: 600; color: #303133; } }</style>
+<style scoped lang="scss">.page-container { .page-title { margin: 0 0 20px 0; font-size: 20px; font-weight: 600; color: #00e5ff; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); } }</style>

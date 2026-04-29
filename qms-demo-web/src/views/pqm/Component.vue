@@ -79,7 +79,7 @@ const handleTrace = () => {
     margin: 0 0 20px 0;
     font-size: 20px;
     font-weight: 600;
-    color: #303133;
+    color: #00e5ff; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
   }
   .search-card {
     margin-bottom: 16px;
