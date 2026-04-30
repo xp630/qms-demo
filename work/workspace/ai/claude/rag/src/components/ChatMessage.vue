@@ -31,7 +31,7 @@ defineProps({
     }
 
     .content {
-      background: #07c160;
+      background: #3B82F6;
       color: #fff;
       border-radius: 18px 18px 4px 18px;
     }
@@ -43,7 +43,7 @@ defineProps({
     .avatar {
       width: 36px;
       height: 36px;
-      background: #07c160;
+      background: #3B82F6;
       border-radius: 50%;
       display: flex;
       align-items: center;

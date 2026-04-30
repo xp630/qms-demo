@@ -53,18 +53,18 @@ defineEmits(['select', 'new'])
 }
 
 .tag {
-  background: #f0f9f0;
-  color: #07c160;
+  background: #EFF6FF;
+  color: #3B82F6;
   padding: 6px 12px;
   border-radius: 16px;
   font-size: 12px;
   white-space: nowrap;
   cursor: pointer;
-  border: 1px solid #07c160;
+  border: 1px solid #3B82F6;
   transition: all 0.2s;
 
   &:active {
-    background: #07c160;
+    background: #3B82F6;
     color: #fff;
   }
 }
@@ -72,7 +72,7 @@ defineEmits(['select', 'new'])
 .new-btn {
   width: 32px;
   height: 32px;
-  background: #07c160;
+  background: #3B82F6;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -82,7 +82,7 @@ defineEmits(['select', 'new'])
   font-weight: 300;
   flex-shrink: 0;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(7, 193, 96, 0.3);
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
 
   &:active {
     transform: scale(0.95);

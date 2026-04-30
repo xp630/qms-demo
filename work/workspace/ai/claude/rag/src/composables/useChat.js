@@ -22,7 +22,7 @@ export function useChat() {
   }
 
   // 发送消息
-  function sendMessage(query) {
+  function sendMessage(query, category = '', onComplete) {
     if (!query.trim() || isLoading.value) return
 
     // 添加用户消息
@@ -34,21 +34,45 @@ export function useChat() {
     })
 
     // ========== FAQ 优先匹配 ==========
-    // 只有在 FAQ 模式下才检查 FAQ
+    // 检查是否匹配 FAQ
     const faqResult = matchFAQ(query)
 
-    if (faqResult.matched && !isFAQMode.value) {
-      // 匹配到 FAQ，直接返回预设答案
-      messages.value.push({
-        id: `ai-${Date.now()}`,
-        role: 'assistant',
-        content: faqResult.answer,
-        thinking: '',
-        sources: [],
-        createdAt: Date.now()
-      })
-      // 切换到 FAQ 模式，后续问题走 Dify
+    if (faqResult.matched) {
       isFAQMode.value = true
+      isLoading.value = true  // 禁用输入
+
+      // 异步调用 Dify 记录上下文（不显示结果）
+      const contextQuery = `【参考问答】用户问：${query} 助手答：${faqResult.answer}。请继续回答用户追问：${query}`
+      sendChatMessage({
+        query: contextQuery,
+        category,
+        conversation_id: conversationId.value,
+        onMessage: () => {},
+        onThinking: () => {},
+        onSource: () => {},
+        onConversationId: (id) => {
+          if (!conversationId.value) {
+            conversationId.value = id
+          }
+        },
+        onDone: () => {
+          isLoading.value = false
+          // 大模型返回后，显示预设答案
+          messages.value.push({
+            id: `ai-${Date.now()}`,
+            role: 'assistant',
+            content: faqResult.answer,
+            thinking: '',
+            sources: [],
+            createdAt: Date.now()
+          })
+          onComplete?.()
+        },
+        onError: () => {
+          isLoading.value = false
+        }
+      })
+
       return
     }
     // =================================
@@ -71,6 +95,7 @@ export function useChat() {
 
     abortController = sendChatMessage({
       query,
+      category,
       conversation_id: conversationId.value,
       onMessage: (content, isReplace) => {
         const lastMsg = messages.value[messages.value.length - 1]
@@ -93,17 +118,26 @@ export function useChat() {
           lastMsg.sources = resources
         }
       },
+      onConversationId: (id) => {
+        if (!conversationId.value) {
+          conversationId.value = id
+        }
+      },
       onDone: () => {
         isLoading.value = false
-        thinking.value = ''
+        // 不清空 thinking，让它继续显示
+        // 对话完成，触发保存回调
+        onComplete?.()
       },
       onError: (error) => {
         isLoading.value = false
-        thinking.value = ''
+        // 不清空 thinking
         const lastMsg = messages.value[messages.value.length - 1]
         if (lastMsg && lastMsg.id === aiMessageId) {
           lastMsg.content = '抱歉，发生了错误：' + error.message
         }
+        // 错误时也触发保存
+        onComplete?.()
       }
     })
   }

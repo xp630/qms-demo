@@ -27,11 +27,11 @@ defineProps({
   border-radius: 12px;
   padding: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  border-left: 3px solid #07c160;
+  border-left: 3px solid #3B82F6;
 
   .header {
     font-size: 11px;
-    color: #07c160;
+    color: #3B82F6;
     margin-bottom: 8px;
     font-weight: 500;
   }

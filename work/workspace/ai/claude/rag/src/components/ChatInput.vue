@@ -1,29 +1,23 @@
 <template>
   <div class="chat-input">
     <div class="input-wrapper">
-      <input
-        ref="inputRef"
-        v-model="inputText"
-        type="text"
-        placeholder="输入问题..."
-        :disabled="disabled"
-        @keyup.enter="handleSend"
-      />
-      <button
-        class="mic-btn"
-        :class="{ active: isListening }"
-        @click="handleMic"
-      >
+      <div class="mic-btn" :class="{ active: isListening }" @click="handleMic">
         {{ isListening ? '🔴' : '🎤' }}
-      </button>
+      </div>
+      <div class="input-box" @click="inputRef?.focus()">
+        <span class="input-icon">💬</span>
+        <input
+          ref="inputRef"
+          v-model="inputText"
+          type="text"
+          placeholder="有什么问题都可以问我"
+          :disabled="disabled"
+          @keyup.enter="handleSend"
+        />
+      </div>
+      <div class="send-btn" @click="handleSend"></div>
     </div>
-    <button
-      class="send-btn"
-      :disabled="!inputText.trim() || disabled"
-      @click="handleSend"
-    >
-      ↑
-    </button>
+    <p class="input-hint">内容由AI生成，仅供参考</p>
   </div>
 </template>
 
@@ -73,86 +67,89 @@ defineExpose({ clear, inputRef })
 
 <style lang="scss" scoped>
 .chat-input {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  padding: 12px 16px;
+  padding: 8px 16px 6px;
   background: #fff;
   border-top: 1px solid #eee;
 }
 
 .input-wrapper {
-  flex: 1;
   display: flex;
   align-items: center;
-  background: #f5f5f5;
-  border-radius: 22px;
-  padding: 0 16px;
+  gap: 10px;
+}
+
+.mic-btn {
+  width: 40px;
+  height: 40px;
+  background: #f3f4f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  font-size: 18px;
+
+  &.active {
+    animation: pulse 1s infinite;
+  }
+}
+
+.input-box {
+  flex: 1;
+  background: #f3f4f6;
+  border-radius: 20px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: text;
+
+  .input-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
 
   input {
     flex: 1;
     border: none;
     background: transparent;
     outline: none;
-    font-size: 15px;
-    padding: 10px 0;
-    min-height: 40px;
+    font-size: 14px;
+    color: #1F2937;
 
     &::placeholder {
-      color: #999;
+      color: #9CA3AF;
     }
 
     &:disabled {
       opacity: 0.6;
     }
   }
-
-  .mic-btn {
-    width: 28px;
-    height: 28px;
-    background: transparent;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.6;
-    transition: opacity 0.2s;
-
-    &:hover {
-      opacity: 1;
-    }
-
-    &.active {
-      opacity: 1;
-      animation: pulse 1s infinite;
-    }
-  }
 }
 
 .send-btn {
-  width: 48px;
+  width: 40px;
   height: 40px;
-  background: #07c160;
-  border: none;
-  border-radius: 22px;
-  color: #fff;
-  font-size: 18px;
-  cursor: pointer;
+  background: #f3f4f6;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  flex-shrink: 0;
+  cursor: pointer;
+  font-size: 18px;
 
-  &:disabled {
-    background: #ccc;
-    cursor: not-allowed;
+  &::before {
+    content: '📤';
   }
+}
 
-  &:not(:disabled):active {
-    transform: scale(0.95);
-  }
+.input-hint {
+  text-align: center;
+  font-size: 10px;
+  color: #9CA3AF;
+  margin-top: 4px;
 }
 
 @keyframes pulse {

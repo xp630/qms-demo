@@ -67,7 +67,7 @@ function toggle() {
     span {
       width: 8px;
       height: 8px;
-      background: #07c160;
+      background: #3B82F6;
       border-radius: 50%;
       animation: bounce 1s infinite;
     }
